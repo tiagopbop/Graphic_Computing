@@ -1,6 +1,6 @@
 # CG 2024/2025
 
-## Group T0xG0y
+## Group T10G11
 | Name             | Number    | E-Mail             |
 | ---------------- | --------- | ------------------ |
 | Mariana Conde       | 202108824 | up202108824@up.pt               |
