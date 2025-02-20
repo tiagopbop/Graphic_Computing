@@ -3,8 +3,8 @@
 ## Group T0xG0y
 | Name             | Number    | E-Mail             |
 | ---------------- | --------- | ------------------ |
-| John Doe         | 201901010 | ...                |
-| Jane Doe         | 201901011 | ...                |
+| Mariana Conde       | 202108824 | up202108824@up.pt               |
+| Tiago Pinheiro          | 202207890 | up202207890@up.pt                |
 
 ----
 
