@@ -1,12 +1,21 @@
 # CG 2024/2025
 
-## Group T0xG0y
+## Group T10G11
 
 ## TP 1 Notes
 
-(add your main observations/remarks about your experiments here, in a bulleted list, and remove this line. Some examples below)
+- We learned the dynamic between the interface, scene and objects
+- Overall the exercises were pretty simple but the indexes caused some confusion
 
-- In exercise 1 we observed X
-- In exercise 2 we had difficulties in Y
-
+### Diamond
 ![Screenshot 1](screenshots/cg-t0xgxx-tp1-n.png)
+
+### Small Triangle
+![Screenshot 1](screenshots/cg-t10g11-tp1-1.png)
+
+### Big Triangle
+![Screenshot 1](screenshots/cg-t10g11-tp1-2.png)
+
+
+
+

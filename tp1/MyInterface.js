@@ -35,6 +35,9 @@ export class MyInterface extends CGFinterface {
         //Checkbox to show small triangle in GUI
         this.gui.add(this.scene, 'triangleSmallCheck').name('Small Triangle Check');
 
+        //Checkbox to show small triangle in GUI
+        this.gui.add(this.scene, 'triangleBigCheck').name('Big Triangle Check');
+
         return true;
     }
 }
