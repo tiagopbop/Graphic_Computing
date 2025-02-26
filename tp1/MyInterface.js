@@ -32,6 +32,9 @@ export class MyInterface extends CGFinterface {
         //Checkbox to show parallelogram in GUI
         this.gui.add(this.scene, 'paralelCheck').name('Paralel Check');
 
+        //Checkbox to show small triangle in GUI
+        this.gui.add(this.scene, 'triangleSmallCheck').name('Small Triangle Check');
+
         return true;
     }
 }
