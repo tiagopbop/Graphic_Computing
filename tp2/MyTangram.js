@@ -1,5 +1,4 @@
 import {CGFobject} from '../lib/CGF.js';
-import { MyScene } from "./MyScene.js";
 import { MyDiamond } from "./MyDiamond.js";
 import { MyTriangle } from "./MyTriangle.js";
 import { MyParallelogram } from "./MyParallelogram.js";
