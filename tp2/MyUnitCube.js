@@ -25,23 +25,23 @@ export class MyUnitCube extends CGFobject {
 
         //Counter-clockwise reference of vertices
         this.indices = [
-            0,2,1, //frente1
-            0,3,2, //frente2
+            0,2,1, //front1
+            0,3,2, //front2
 
-            1,5,0, //direita1
-            1,6,5, //direita22
+            1,5,0, //right1
+            1,6,5, //right2
 
-            6,4,5, //tras1
-            6,7,4, //tras2
+            6,4,5, //back1
+            6,7,4, //back2
 
-            7,3,4, //esquerda1
-            7,2,3, //esquerda2
+            7,3,4, //left1
+            7,2,3, //left2
 
-            3,5,4, //cima1
-            3,0,5, //cima2
+            3,5,4, //top1
+            3,0,5, //top2
 
-            1,2,6, //baixo1
-            2,7,6  //baixo2
+            1,2,6, //bottom1
+            2,7,6  //bottom2
         ];
 
         //The defined indices (and corresponding vertices)

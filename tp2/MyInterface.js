@@ -26,6 +26,8 @@ export class MyInterface extends CGFinterface {
         //Checkbox to show tangram in GUI
         this.gui.add(this.scene, 'tangramCheck').name('Tangram Check');
         this.gui.add(this.scene, 'unitcubeCheck').name('Unit Cube Check');
+        this.gui.add(this.scene, 'quadCheck').name('Quad Check');
+        this.gui.add(this.scene, 'unitcubequadCheck').name('Unit Cube Quad Check');
 
 
 
