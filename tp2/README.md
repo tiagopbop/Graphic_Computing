@@ -27,7 +27,14 @@
 ### Unit Cube
 ![cg-t10g11-tp2-2.png](screenshots%2Fcg-t10g11-tp2-2.png)
 
+### Tangram and Unit Cube
+![cg-t10g11-tp2-2_fix.png](screenshots%2Fcg-t10g11-tp2-2_fix.png)
+
 ### Unit Quad
 
 ![cg-t10g11-tp2-3_aux.png](screenshots%2Fcg-t10g11-tp2-3_aux.png)
 ![cg-t10g11-tp2-3.png](screenshots%2Fcg-t10g11-tp2-3.png)
+
+
+### Tangram and Unit Quad
+![cg-t10g11-tp2-3_fix.png](screenshots%2Fcg-t10g11-tp2-3_fix.png)
