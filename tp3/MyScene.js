@@ -43,6 +43,7 @@ export class MyScene extends CGFscene {
         this.displayNormals = false;
         this.objectComplexity = 0.5;
         this.scaleFactor = 2.0;
+        this.ambientlightFactor = 0.3;
 
     }
     initLights() {
@@ -166,7 +167,9 @@ export class MyScene extends CGFscene {
 
         this.pushMatrix();
         this.scale(this.scaleFactor,this.scaleFactor,this.scaleFactor);
-        
+        this.setGlobalAmbientLight(this.ambientlightFactor,this.ambientlightFactor,this.ambientlightFactor,1.0);
+
+
         if (this.displayNormals)
             this.objects[this.selectedObject].enableNormalViz();
         else
