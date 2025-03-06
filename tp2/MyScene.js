@@ -78,7 +78,21 @@ export class MyScene extends CGFscene {
 
     // Draw axis
     if (this.displayAxis) this.axis.display();
-    if (this.tangramCheck) this.tangram.display();
+
+    if (this.tangramCheck) {
+      this.pushMatrix();
+      this.scale(1,1,1);
+      this.translate(0,-0.5,0);
+      this.unitcube.display();
+      this.popMatrix();
+
+      this.pushMatrix();
+      this.rotate(MathPI,0,1,0);
+      this.tangram.display();
+      this.popMatrix();
+
+    }
+
     if (this.unitcubeCheck) this.unitcube.display();
     if (this.quadCheck) this.quad.display();
     if (this.unitcubequadCheck) this.unitcubequad.display();

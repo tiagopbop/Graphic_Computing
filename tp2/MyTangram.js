@@ -4,6 +4,8 @@ import { MyTriangle } from "./MyTriangle.js";
 import { MyParallelogram } from "./MyParallelogram.js";
 import { MyTriangleSmall} from "./MyTriangleSmall.js";
 import { MyTriangleBig} from "./MyTriangleBig.js";
+import { MyUnitCube} from "./MyUnitCube.js";
+import { MyUnitCubeQuad} from "./MyUnitCubeQuad.js";
 
 
 /**
@@ -19,6 +21,8 @@ export class MyTangram extends CGFobject {
         this.smallTriangle = new MyTriangleSmall(this.scene);
         this.parallelogram = new MyParallelogram(this.scene);
         this.triangle = new MyTriangle(this.scene);
+        this.unitcube = new MyUnitCube(this.scene);
+    //    this.unitcubequad = new MyUnitCubeQuad(this.scene);
     }
 
     display(){
@@ -111,6 +115,8 @@ export class MyTangram extends CGFobject {
         this.parallelogram.display();
         this.scene.popMatrix();
 
+
+  
     }
 }
 
