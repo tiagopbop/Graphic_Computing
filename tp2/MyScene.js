@@ -39,8 +39,8 @@ export class MyScene extends CGFscene {
     this.unitcubeCheck = false;
     this.quadCheck = false;
     this.unitcubequadCheck = false;
-
-
+    this.tangramandcubeCheck = false;
+    this.tangramandquadCheck = false;
     this.displayAxis = true;
     this.scaleFactor = 1;
   }
@@ -80,21 +80,46 @@ export class MyScene extends CGFscene {
     if (this.displayAxis) this.axis.display();
 
     if (this.tangramCheck) {
+      this.tangram.display();
+
+    }
+    if (this.unitcubeCheck) this.unitcube.display();
+
+    if(this.tangramandcubeCheck)
+    {
       this.pushMatrix();
-      this.scale(1,1,1);
-      this.translate(0,-0.5,0);
+      this.setDiffuse(0,0,150/255,1);
+      this.scale(10,10,10);
+      this.translate(0.5,-0.501,0.5);
       this.unitcube.display();
       this.popMatrix();
 
       this.pushMatrix();
-      this.rotate(MathPI,0,1,0);
+      this.translate(4.5,0,5.7);
+      this.rotate(3*Math.PI/2,1,0,0);
       this.tangram.display();
       this.popMatrix();
+    }
+    
 
+    if (this.quadCheck) this.quad.display();
+
+    if(this.tangramandquadCheck){
+      this.pushMatrix();
+      this.setDiffuse(0,0,150/255,1);
+      this.scale(10,10,10);
+      this.translate(0.5,-0.501,0.5);
+      this.unitcubequad.display();
+      this.popMatrix();
+
+      this.pushMatrix();
+      this.translate(4.5,0,5.7);
+      this.rotate(3*Math.PI/2,1,0,0);
+      this.tangram.display();
+      this.popMatrix();
     }
 
-    if (this.unitcubeCheck) this.unitcube.display();
-    if (this.quadCheck) this.quad.display();
+
     if (this.unitcubequadCheck) this.unitcubequad.display();
 
 
