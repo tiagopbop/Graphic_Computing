@@ -21,3 +21,9 @@
 
 ### Unit Cube Wood Texture
 ![cg-t10g11-tp3-2.png](screenshots/cg-t10g11-tp3-2.png)
+
+### Tangram Normals
+![cg-t10g11-tp3-2.png](screenshots/cg-t10g11-tp3-3.png)
+
+### Tangram Custom
+![cg-t10g11-tp3-2.png](screenshots/cg-t10g11-tp3-4.png)
