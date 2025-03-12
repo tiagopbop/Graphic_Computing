@@ -17,7 +17,7 @@
 - We tried two different aproaches for the cube and tangram. The one used on the cube proved to be a little annoying because of our initial aproach, which was caused by our bad interpretation.
 
 ### Unit Cube Normals
-![cg-t10g11-tp3-1.png](screenshots/cg-t10g11-tp3-1_fix.png)
+![cg-t10g11-tp3-1.png](screenshots/cg-t10g11-tp3-1.png)
 
 ### Unit Cube Wood Texture
 ![cg-t10g11-tp3-2.png](screenshots/cg-t10g11-tp3-2.png)
