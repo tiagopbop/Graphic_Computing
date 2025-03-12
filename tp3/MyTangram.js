@@ -110,7 +110,24 @@ export class MyTangram extends CGFobject {
         this.scene.rotate(45 * (Math.PI/180), 0,0,1);
         this.parallelogram.display();
         this.scene.popMatrix();
-
     }
+
+    // Make Normal Vector Visible in the Scene
+    enableNormalViz(){
+        this.diamond.enableNormalViz()
+        this.bigTriangle.enableNormalViz()
+        this.smallTriangle.enableNormalViz()
+        this.parallelogram.enableNormalViz()
+        this.triangle.enableNormalViz()
+    };
+
+    // Make Normal Vectors Invisible
+    disableNormalViz(){
+        this.diamond.disableNormalViz()
+        this.bigTriangle.disableNormalViz()
+        this.smallTriangle.disableNormalViz()
+        this.parallelogram.disableNormalViz()
+        this.triangle.disableNormalViz()
+    };
 }
 
