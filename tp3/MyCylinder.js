@@ -5,7 +5,7 @@ import {CGFobject} from '../lib/CGF.js';
  * @constructor
  * @param scene - Reference to MyScene object
  */
-export class MyPrism extends CGFobject {
+export class MyCylinder extends CGFobject {
     constructor(scene, slices, stacks) {
         super(scene);
         this.slices = slices;
@@ -29,10 +29,12 @@ export class MyPrism extends CGFobject {
 
             for (var i = 0; i < this.slices; i++) {
 
+                //used for normals
                 let sa = Math.sin(ang);
-                let saa = Math.sin(ang + alphaAng);
+                let saa = Math.sin(ang+alphaAng);
                 let ca = Math.cos(ang);
-                let caa = Math.cos(ang + alphaAng);
+                let caa = Math.cos(ang+alphaAng);
+
 
                 //Define Vertices for this Slice
                 this.vertices.push(ca, sa, zUpper);
@@ -41,30 +43,31 @@ export class MyPrism extends CGFobject {
                 this.vertices.push(caa, saa, zUpper);
 
                 // Compute Normal Vectors
-                let normalX = (ca + caa) / 2;
-                let normalY = (sa + saa) / 2;
+                let normalX = (ca);
+                let normalY = (sa);
+
+                let normalXX = (caa);
+                let normalYY = (saa);
 
                 let normalLength = Math.sqrt(normalX ** 2 + normalY ** 2);
                 normalX /= normalLength;
                 normalY /= normalLength;
 
+                normalXX /= normalLength;
+                normalYY /= normalLength;
+
                 let normal = [normalX, normalY, 0];
+                let normalXY = [normalXX, normalYY,0];
 
                 // Assign Normals
-                this.normals.push(...normal, ...normal, ...normal, ...normal);
+                this.normals.push(...normal, ...normal, ...normalXY,...normalXY);
 
 
                 // Define Indices for this Face
                 this.indices.push(indexAux, indexAux + 1, indexAux + 2);
                 this.indices.push(indexAux, indexAux + 2, indexAux + 3);
 
-                if(j < this.stacks - 1){
-                    // Connect to next stack
-                    this.indices.push(indexAux+2, indexAux + 1, indexAux + 5);
-                    this.indices.push(indexAux+2, indexAux + 5, indexAux + 6);
-                    this.indices.push(indexAux+3, indexAux + 2, indexAux + 6);
-                    this.indices.push(indexAux+3, indexAux + 6, indexAux + 7);
-                }
+  
 
                 indexAux += 4;
                 ang += alphaAng;
@@ -80,16 +83,16 @@ export class MyPrism extends CGFobject {
 
         this.initGLBuffers();
     }
-            /**
+        /**
      * Called when user interacts with GUI to change object's complexity.
      * @param {integer} complexity - changes number of slices
      */
-            updateBuffers(complexity){
-                this.slices = 3 + Math.round(9 * complexity); //complexity varies 0-1, so slices varies 3-12
-        
-                // reinitialize buffers
-                this.initBuffers();
-                this.initNormalVizBuffers();
-            }
+        updateBuffers(complexity){
+            this.slices = 3 + Math.round(9 * complexity); //complexity varies 0-1, so slices varies 3-12
+    
+            // reinitialize buffers
+            this.initBuffers();
+            this.initNormalVizBuffers();
+        }
 }
 
