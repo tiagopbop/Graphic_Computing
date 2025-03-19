@@ -5,6 +5,8 @@ import { MyPlane } from "./MyPlane.js";
 import { MyTangram } from "./MyTangram.js";
 import { MyUnitCube } from "./MyUnitCube.js";
 import { MyPrism} from "./MyPrism.js";
+import { MyCylinder} from "./MyCylinder.js";
+
 
 /**
 * MyScene
@@ -35,12 +37,13 @@ export class MyScene extends CGFscene {
         this.pyramid = new MyPyramid(this, 3, 1);
         this.tangram = new MyTangram(this);
         this.unitcube = new MyUnitCube(this,5);
-        this.prism = new MyPrism(this, 6, 20);
+        this.prism = new MyPrism(this, 8, 20);
+        this.cylinder = new MyCylinder(this,8,20);
 
-        this.objects = [this.plane, this.pyramid, this.cone, this.tangram, this.unitcube, this.prism];
+        this.objects = [this.plane, this.pyramid, this.cone, this.tangram, this.unitcube, this.prism, this.cylinder];
 
         // Labels and ID's for object selection on MyInterface
-        this.objectIDs = { 'Plane': 0 , 'Pyramid': 1, 'Cone': 2, 'Tangram': 3, 'UnitCube': 4, 'Prism': 5};
+        this.objectIDs = { 'Plane': 0 , 'Pyramid': 1, 'Cone': 2, 'Tangram': 3, 'UnitCube': 4, 'Prism': 5, 'Cylinder': 6};
 
         //Other variables connected to MyInterface
         this.selectedObject = 0;
