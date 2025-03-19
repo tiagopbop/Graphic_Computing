@@ -42,3 +42,18 @@ The hardest part was defining the normals for each vertex and getting them to be
 
 ### Prism With Normals Displayed
 ![cg-t10g11-tp3-6.png](screenshots/cg-t10g11-tp3-6.png)
+
+---
+
+### Cylinder Implementation
+
+- This last exercise reinforced our preception on how normals affect lighting. With the knowledge from the previous exercises, this one proved to be easy.
+
+### Cylinder
+![cg-t10g11-tp3-6.png](screenshots/cg-t10g11-tp3-7.png)
+
+### Cylinder With Normals Displayed
+![cg-t10g11-tp3-6.png](screenshots/cg-t10g11-tp3-8.png)
+
+### Round Cylinder
+![cg-t10g11-tp3-6.png](screenshots/cg-t10g11-tp3-9.png)
