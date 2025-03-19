@@ -58,13 +58,13 @@ export class MyPrism extends CGFobject {
                 this.indices.push(indexAux, indexAux + 1, indexAux + 2);
                 this.indices.push(indexAux, indexAux + 2, indexAux + 3);
 
-                if(j < this.stacks - 1){
-                    // Connect to next stack
-                    this.indices.push(indexAux+2, indexAux + 1, indexAux + 5);
-                    this.indices.push(indexAux+2, indexAux + 5, indexAux + 6);
-                    this.indices.push(indexAux+3, indexAux + 2, indexAux + 6);
-                    this.indices.push(indexAux+3, indexAux + 6, indexAux + 7);
-                }
+                // if(j < this.stacks - 1){
+                //     // Connect to next stack
+                //     this.indices.push(indexAux+2, indexAux + 1, indexAux + 5);
+                //     this.indices.push(indexAux+2, indexAux + 5, indexAux + 6);
+                //     this.indices.push(indexAux+3, indexAux + 2, indexAux + 6);
+                //     this.indices.push(indexAux+3, indexAux + 6, indexAux + 7);
+                // }
 
                 indexAux += 4;
                 ang += alphaAng;
