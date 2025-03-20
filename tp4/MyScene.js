@@ -1,5 +1,6 @@
 import { CGFscene, CGFcamera, CGFaxis, CGFappearance, CGFtexture } from "../lib/CGF.js";
 import { MyQuad } from "./MyQuad.js";
+import { MyTangram } from "./MyTangram.js";
 
 /**
  * MyScene
@@ -27,6 +28,7 @@ export class MyScene extends CGFscene {
         //Initialize scene objects
         this.axis = new CGFaxis(this);
         this.quad = new MyQuad(this);
+        this.tangram = new MyTangram(this);
 
         //------ Applied Material
         this.quadMaterial = new CGFappearance(this);
@@ -50,11 +52,15 @@ export class MyScene extends CGFscene {
         this.selectedTexture = -1;        
         this.wrapS = 0;
         this.wrapT = 0;
+        this.selectedObject = 0;
 
+
+        this.objects = [this.quad, this.tangram];
         this.textures = [this.texture1, this.texture2, this.texture3];
         this.texCoords = [0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0];
         this.wrappingMethods = ['REPEAT', 'CLAMP_TO_EDGE', 'MIRRORED_REPEAT'];
 
+        this.objectIDs = { 'Quad': 0, 'Tangram': 1 };
         this.textureIds = { 'Board': 0, 'Floor': 1, 'Window': 2 };
         this.wrappingS = { 'Repeat': 0, 'Clamp to edge': 1, 'Mirrored repeat': 2 };
         this.wrappingT = { 'Repeat': 0, 'Clamp to edge': 1, 'Mirrored repeat': 2 };
@@ -92,7 +98,11 @@ export class MyScene extends CGFscene {
     //Function that updates texture coordinates in MyQuad
     updateTexCoords() {
         this.quad.updateTexCoords(this.texCoords);
+        this.tangram.updateTexCoords(this.texCoords);
     }
+    // updateObject(){
+    //     this.objects[this.selectedObject].updateBuffers(this.objectsIDs[this.selectedObject]);
+    // }
 
     display() {
   
@@ -114,6 +124,7 @@ export class MyScene extends CGFscene {
 
         this.scale(this.scaleFactor, this.scaleFactor, this.scaleFactor);
 
+
         // ---- BEGIN Primitive drawing section
 
         this.quadMaterial.apply();
@@ -124,7 +135,11 @@ export class MyScene extends CGFscene {
         
         // this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
 
-        this.quad.display();
+
+
+        this.objects[this.selectedObject].display();
+
+
 
         // ---- END Primitive drawing section
     }
