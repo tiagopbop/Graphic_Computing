@@ -1,6 +1,7 @@
 import { CGFscene, CGFcamera, CGFaxis, CGFappearance, CGFtexture } from "../lib/CGF.js";
 import { MyQuad } from "./MyQuad.js";
 import { MyTangram } from "./MyTangram.js";
+import { MyUnitCubeQuad } from "./MyUnitCubeQuad.js";
 
 /**
  * MyScene
@@ -25,12 +26,7 @@ export class MyScene extends CGFscene {
         this.gl.depthFunc(this.gl.LEQUAL);
         this.enableTextures(true);
 
-        //Initialize scene objects
-        this.axis = new CGFaxis(this);
-        this.quad = new MyQuad(this);
-        this.tangram = new MyTangram(this);
-        this.tangramCheck = true;
-        this.quadCheck = false;
+
         //------ Applied Material
         this.quadMaterial = new CGFappearance(this);
         this.quadMaterial.setAmbient(0.1, 0.1, 0.1, 1);
@@ -46,6 +42,23 @@ export class MyScene extends CGFscene {
         this.texture2 = new CGFtexture(this, 'images/floor.png');
         this.texture3 = new CGFtexture(this, 'images/window.jpg');
         //-------
+
+        //------ Minecraft Cube Textures
+        this.minecraftTop = new CGFtexture(this, 'images/mineTop.png');
+        this.minecraftSide = new CGFtexture(this, 'images/mineSide.png'); // Front, Right, Back and Left Textures
+        this.minecraftBottom = new CGFtexture(this, 'images/mineBottom.png');
+
+
+        //Initialize scene objects
+        this.axis = new CGFaxis(this);
+        this.quad = new MyQuad(this);
+        this.tangram = new MyTangram(this);
+        this.unitCube = new MyUnitCubeQuad(this, this.minecraftTop, this.minecraftSide, this.minecraftSide, this.minecraftSide, this.minecraftSide, this.minecraftBottom);
+
+        this.tangramCheck = true;
+        this.quadCheck = false;
+        this.unitCubeCheck = false;
+
 
         //-------Objects connected to MyInterface
         this.displayAxis = true;
@@ -138,6 +151,9 @@ export class MyScene extends CGFscene {
             this.quadMaterial.apply();
             this.quad.display();
           }
+        if (this.unitCubeCheck) {
+            this.unitCube.display();
+        }
 
         //this.objects[this.selectedObject].display();
         //this.tangram.display();

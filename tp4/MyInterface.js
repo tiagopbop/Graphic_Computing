@@ -23,7 +23,9 @@ export class MyInterface extends CGFinterface {
         this.gui.add(this.scene, 'displayAxis').name('Display Axis');
 
         this.gui.add(this.scene, 'tangramCheck').name('Tangram Check');
-        this.gui.add(this.scene, 'quadCheck').name('Quad Check');        
+        this.gui.add(this.scene, 'quadCheck').name('Quad Check');
+        this.gui.add(this.scene, 'unitCubeCheck').name('Unit Cube Check');
+
         this.gui.add(this.scene, 'selectedTexture', this.scene.textureIds).name('Selected Texture').onChange(this.scene.updateAppliedTexture.bind(this.scene));
         //Dropdown for wrapping (S)
         this.gui.add(this.scene, 'wrapS', this.scene.wrappingS).name('Wrap S').onChange(this.scene.updateTextureWrapping.bind(this.scene));
