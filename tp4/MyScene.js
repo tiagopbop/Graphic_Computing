@@ -29,7 +29,8 @@ export class MyScene extends CGFscene {
         this.axis = new CGFaxis(this);
         this.quad = new MyQuad(this);
         this.tangram = new MyTangram(this);
-
+        this.tangramCheck = true;
+        this.quadCheck = false;
         //------ Applied Material
         this.quadMaterial = new CGFappearance(this);
         this.quadMaterial.setAmbient(0.1, 0.1, 0.1, 1);
@@ -52,15 +53,12 @@ export class MyScene extends CGFscene {
         this.selectedTexture = -1;        
         this.wrapS = 0;
         this.wrapT = 0;
-        this.selectedObject = 0;
 
 
-        this.objects = [this.quad, this.tangram];
         this.textures = [this.texture1, this.texture2, this.texture3];
         this.texCoords = [0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0];
         this.wrappingMethods = ['REPEAT', 'CLAMP_TO_EDGE', 'MIRRORED_REPEAT'];
 
-        this.objectIDs = { 'Quad': 0, 'Tangram': 1 };
         this.textureIds = { 'Board': 0, 'Floor': 1, 'Window': 2 };
         this.wrappingS = { 'Repeat': 0, 'Clamp to edge': 1, 'Mirrored repeat': 2 };
         this.wrappingT = { 'Repeat': 0, 'Clamp to edge': 1, 'Mirrored repeat': 2 };
@@ -98,11 +96,8 @@ export class MyScene extends CGFscene {
     //Function that updates texture coordinates in MyQuad
     updateTexCoords() {
         this.quad.updateTexCoords(this.texCoords);
-        this.tangram.updateTexCoords(this.texCoords);
     }
-    // updateObject(){
-    //     this.objects[this.selectedObject].updateBuffers(this.objectsIDs[this.selectedObject]);
-    // }
+
 
     display() {
   
@@ -120,6 +115,8 @@ export class MyScene extends CGFscene {
         if (this.displayAxis)
             this.axis.display();
 
+
+ 
         this.setDefaultAppearance();
 
         this.scale(this.scaleFactor, this.scaleFactor, this.scaleFactor);
@@ -127,18 +124,24 @@ export class MyScene extends CGFscene {
 
         // ---- BEGIN Primitive drawing section
 
-        this.quadMaterial.apply();
-
+        
         // Default texture filtering in WebCGF is LINEAR. 
         // Uncomment next line for NEAREST when magnifying, or 
         // add a checkbox in the GUI to alternate in real time
         
         // this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
 
+        if (this.tangramCheck) {
+            this.tangram.display();
+          }
+        if (this.quadCheck) {
+            this.quadMaterial.apply();
+            this.quad.display();
+          }
 
-
-        this.objects[this.selectedObject].display();
-
+        //this.objects[this.selectedObject].display();
+        //this.tangram.display();
+        this.popMatrix;
 
 
         // ---- END Primitive drawing section

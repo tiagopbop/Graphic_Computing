@@ -1,8 +1,9 @@
 import {CGFobject} from '../lib/CGF.js';
 
 export class MyTriangleSmall extends CGFobject{
-    constructor(scene) {
+    constructor(scene,textureCoords) {
         super(scene);
+        this.texCoords = textureCoords;
         this.initBuffers();
     }
 
@@ -34,4 +35,5 @@ export class MyTriangleSmall extends CGFobject{
 
         this.initGLBuffers();
     }
+
 }
