@@ -152,6 +152,7 @@ export class MyScene extends CGFscene {
             this.quad.display();
           }
         if (this.unitCubeCheck) {
+            this.quadMaterial.apply();
             this.unitCube.display();
         }
 

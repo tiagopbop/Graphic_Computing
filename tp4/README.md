@@ -7,7 +7,14 @@
 ---
 ## First Exercise - Applying Textures to Tangram
 
-- `missing`
+- This part of the work was hard to start since we had little to none experience with textures. When we grapsped how the texture coordinates worked, the work went smoothly.   
+
+### Textured Tangram
+![cg-t10g11-tp4-5.png](screenshots/cg-t10g11-tp4-5.png)
+
+### Textured Line Tangram
+![cg-t10g11-tp4-4.png](screenshots/cg-t10g11-tp4-4.png)
+
 
 ---
 
