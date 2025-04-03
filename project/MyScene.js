@@ -27,7 +27,7 @@ export class MyScene extends CGFscene {
 
     this.setUpdatePeriod(50);
 
-    //Initialize scene objects
+    //Initialize env objects
     this.axis = new CGFaxis(this, 20, 1);
     this.plane = new MyPlane(this, 64);
   }
@@ -76,7 +76,7 @@ export class MyScene extends CGFscene {
   }
   display() {
     // ---- BEGIN Background, camera and axis setup
-    // Clear image and depth buffer everytime we update the scene
+    // Clear image and depth buffer everytime we update the env
     this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
     // Initialize Model-View matrix as identity (no transformation

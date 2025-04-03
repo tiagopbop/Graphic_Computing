@@ -23,7 +23,7 @@ export class MyInterface extends CGFinterface {
     }
 
     initKeys() {
-        // create reference from the scene to the GUI
+        // create reference from the env to the GUI
         this.scene.gui = this;
 
         // disable the processKeyboard function
