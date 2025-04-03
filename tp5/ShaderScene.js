@@ -275,6 +275,7 @@ export class ShaderScene extends CGFscene {
 			this.pushMatrix();
 			
 			this.scale(25, 25, 25);
+			this.rotate(-Math.PI / 2, 1, 0, 0); // Rotate the plane to be parallel to the xz plane
 			this.objects[1].display();
 			
 			this.popMatrix();
