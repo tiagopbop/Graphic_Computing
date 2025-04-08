@@ -1,4 +1,6 @@
-import {CGFobject} from '../lib/CGF.js';
+import {CGFobject} from '../../lib/CGF.js';
+import { MyCube } from "../geometric/MyCube.js";
+
 /**
  * MyBuilding
  * @constructor
@@ -7,26 +9,45 @@ import {CGFobject} from '../lib/CGF.js';
 export class MyBuilding extends CGFobject {
     constructor(scene) {
         super(scene);
-        this.initBuffers();
+        this.cube = new MyCube(this.scene,1,1,1);
+        this.cube2 = new MyCube(this.scene,2.5,1.5,1.5);
+        this.cube3 = new MyCube(this.scene,.75, 1,1);
+
+
+        // this.initBuffers();
     }
 
-    initBuffers() {
-        // this.vertices = [
-        //     -1, 0, 0,	//0
-        //     0, -1, 0,	//1
-        //     0, 1, 0,	//2
-        //     1, 0, 0		//3
-        // ];
-        //
-        // //Counter-clockwise reference of vertices
-        // this.indices = [
-        //     0, 1, 2,
-        //     1, 3, 2
-        // ];
+    display() {
 
-        this.primitiveType = this.scene.gl.TRIANGLES;
+        // Middle Building
+        this.scene.pushMatrix();
+        this.cube.display();
+        this.scene.popMatrix();
 
-        this.initGLBuffers();
+
+        // Left Building
+        this.scene.pushMatrix();
+        this.scene.translate(1.25, 0, 0);
+        this.cube2.display();
+        this.scene.popMatrix();
+
+
+
+        // Right Building
+        this.scene.pushMatrix();
+        this.scene.translate(-1.25, 0, 0);
+        this.cube2.display();
+        this.scene.popMatrix();
+
+        // Door Part
+        this.scene.pushMatrix();
+        this.scene.translate(0, -.87, 0);
+        this.cube3.display();
+        this.scene.popMatrix();
+
+
+        // this.primitiveType = this.scene.gl.TRIANGLES;
+        // this.initGLBuffers();
     }
 }
 
