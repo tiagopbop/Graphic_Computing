@@ -33,8 +33,21 @@ export class MyScene extends CGFscene {
 
     this.axis = new CGFaxis(this, 20, 1);
 
-    this.sphere = new MySphere(this,40,20);
-    this.plane = new MyPlane(this,64);
+    //Initialize env objects
+    this.objects = [
+        new MyPlane(this, 64),
+        new MySphere(this, 5, 128, 128),
+        new MyCube(this, 1, 1, 1),
+        new MyBuilding(this)
+    ];
+
+    //Ob
+    this.objectList = {
+      'Plane' : 0,
+      'Sphere' : 1,
+      'Cube' : 2,
+      'Building' : 3
+    }
 
     this.selectedObject = 0;
     this.selectedMaterial = 0;
@@ -117,16 +130,13 @@ export class MyScene extends CGFscene {
     this.earthMaterial.loadTexture('./textures/earth.png') // Load the earth texture
     this.earthMaterial.setTextureWrap('REPEAT', 'REPEAT');
 
-    // Interior Material
-    this.panoramMaterial = new CGFappearance(this);
-    this.panoramMaterial.setAmbient(0.7, 0.7, 0.7, 1.0);
-    this.panoramMaterial.setDiffuse(1.0, 1.0, 1.0, 1.0);
-    this.panoramMaterial.setSpecular(0.5, 0.5, 0.5, 1.0);
-    this.panoramMaterial.setShininess(20.0);
-    this.panoramMaterial.loadTexture('./textures/panoram.jpg') // Load the earth texture
-    this.panoramMaterial.setTextureWrap('REPEAT', 'REPEAT');
+    // Material Lists
+    this.materials = [this.defaultMaterial, this.earthMaterial];
 
-
+    this.materialIDs = {
+        'Default': 0,
+        'Earth': 1
+    };
   }
 
   update(t) {
@@ -175,27 +185,15 @@ export class MyScene extends CGFscene {
 
     this.setDefaultAppearance();
 
-    //exterior
-    this.pushMatrix();
-    this.earthMaterial.apply();
-    this.scale(151,151,151);
-    this.sphere.display();
-    this.popMatrix();
+    // ---- BEGIN Geometric transformation section
 
-    //interior
-    this.pushMatrix();
-    this.panoramMaterial.apply();
-    this.scale(-151,-151,-151);
-    this.rotate(Math.PI,1,0,0)
-    this.sphere.display();
-    this.popMatrix();
 
-    //plane
     this.pushMatrix();
-    this.defaultMaterial.apply();
-    this.rotate(-Math.PI/2,1,0,0);
-    this.scale(200,200,1);
-    this.plane.display();
+    this.scale(this.scaleFactor, this.scaleFactor, this.scaleFactor);
+
+    this.materials[this.selectedMaterial].apply();
+    this.objects[this.selectedObject].display();
+
     this.popMatrix();
 
   }

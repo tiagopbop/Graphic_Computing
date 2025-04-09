@@ -3,14 +3,12 @@ import {CGFobject} from '../../lib/CGF.js';
  * MySphere
  * @constructor
  * @param scene - Reference to MyScene object
- * @param radius - sphere radius
  * @param slices - number of slices
  * @param stacks - number of stacks
  */
 export class MySphere extends CGFobject {
-    constructor(scene, radius, slices, stacks) {
+    constructor(scene, slices, stacks) {
         super(scene);
-        this.radius = radius;
         this.slices = slices;
         this.stacks = stacks;
         this.initBuffers();
@@ -45,16 +43,16 @@ export class MySphere extends CGFobject {
                 const cosTheta = Math.cos(theta);
                 const sinTheta = Math.sin(theta);
 
-                const x = this.radius * cosPhi * cosTheta;
-                const y = this.radius * sinPhi;
-                const z = this.radius * cosPhi * sinTheta;
+                const x = cosPhi * cosTheta;
+                const y = sinPhi;
+                const z = cosPhi * sinTheta;
 
                 this.vertices.push(x, y, z);
 
                 // Normals
                 const length = Math.sqrt(x * x + y * y + z * z);
                 this.normals.push(x / length, y / length, z / length);
-                this.texCoords.push(longitude / this.slices, latitude / this.stacks);
+                this.texCoords.push(1-longitude / this.slices, latitude / this.stacks);
             }
         }
 
@@ -64,14 +62,22 @@ export class MySphere extends CGFobject {
                 const first = (latitude * (this.slices + 1)) + longitude;
                 const second = first + this.slices + 1;
 
-                if (latitude !== 0) {
-                    this.indices.push(first, second, first + 1);
+                if (latitude == 0) {
+                    this.indices.push(second + 1, second, first);
                 }
-                if (latitude !== this.stacks - 1) {
-                    this.indices.push(second, second + 1, first + 1);
+                else if (latitude == this.stacks - 1) {
+                    this.indices.push(first + 1, second, first);
+                }
+                else{
+                    this.indices.push(first+1, second, first);
+                    this.indices.push(second+1, second, first+1);
                 }
             }
         }
+
+
+
+
 
         this.primitiveType = this.scene.gl.TRIANGLES;
         this.initGLBuffers();
