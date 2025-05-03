@@ -4,7 +4,7 @@ import { CGFinterface, dat } from '../lib/CGF.js';
 * MyInterface
 * @constructor
 */
-export class MyInterface extends CGFinterface {
+export class MyInterface2 extends CGFinterface {
     constructor() {
         super();
     }
