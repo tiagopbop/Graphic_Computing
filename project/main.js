@@ -2,19 +2,21 @@
 import {CGFapplication} from '../lib/CGF.js';
 import { MyScene } from './MyScene.js';
 import { MyInterface } from './MyInterface.js';
+import { MyScene2 } from './MyScene2.js';
+import { MyInterface2 } from './MyInterface2.js';
 
 function main()
 {
     var app = new CGFapplication(document.body);
-    var myScene = new MyScene();
-    var myInterface = new MyInterface();
+    var myScene2 = new MyScene2();
+    var myInterface2 = new MyInterface2();
 
     app.init();
 
-    app.setScene(myScene);
-    app.setInterface(myInterface);
+    app.setScene(myScene2);
+    app.setInterface(myInterface2);
 
-    myInterface.setActiveCamera(myScene.camera);
+    myInterface2.setActiveCamera(myScene2.camera);
 
     app.run();
 }

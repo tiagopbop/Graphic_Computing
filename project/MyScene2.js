@@ -1,4 +1,4 @@
-import { CGFscene, CGFcamera, CGFaxis, CGFappearance } from "../lib/CGF.js";
+import { CGFscene, CGFcamera, CGFaxis, CGFappearance, CGFtexture } from "../lib/CGF.js";
 import { MyPlane } from "./MyPlane.js";
 import { MySphere } from "./geometric/MySphere.js"
 import { MyCube } from "./geometric/MyCube.js";
@@ -8,7 +8,7 @@ import { MyBuilding } from "./objects/MyBuilding.js";
  * MyScene
  * @constructor
  */
-export class MyScene extends CGFscene {
+export class MyScene2 extends CGFscene {
   constructor() {
     super();
   }
@@ -18,6 +18,7 @@ export class MyScene extends CGFscene {
     this.initCameras();
     this.initLights();
     this.initMaterials();
+    this.initTextures();
 
     //Background color
     this.gl.clearColor(0, 0, 0, 1.0);
@@ -49,47 +50,58 @@ export class MyScene extends CGFscene {
       'Building' : 3
     }
 
-    this.selectedObject = 0;
+    this.selectedObject = 3;
     this.selectedMaterial = 0;
     this.displayAxis = true;
-    this.scaleFactor = 20.0;
-    this.ambientlightFactor = 0.3;
-    this.cameraZoom = 0.4;
+    this.scaleFactor = 10.0;
+    this.ambientlightFactor = 0.6;
+    this.cameraZoom = 0.35;
 
   }
   initLights() {
     this.setGlobalAmbientLight(0.3, 0.3, 0.3, 1.0);
 
-    this.lights[0].setPosition(50.0, 50.0, 50.0, 1.0);
+    this.lights[0].setPosition(40.0, 100.0, 40.0, 1.0);
     this.lights[0].setDiffuse(1.0, 1.0, 1.0, 1.0);
     this.lights[0].setSpecular(1.0, 1.0, 1.0, 1.0);
+    this.lights[0].setConstantAttenuation(1.0);
+    this.lights[0].setLinearAttenuation(0.01);
+    this.lights[0].setQuadraticAttenuation(0.001);
     this.lights[0].enable();
     this.lights[0].setVisible(true);
     this.lights[0].update();
 
-    this.lights[1].setPosition(-50.0, 50.0, 50.0, 1.0);
+    this.lights[1].setPosition(-40.0, 100.0, -40.0, 1.0);
     this.lights[1].setDiffuse(1.0, 1.0, 1.0, 1.0);
     this.lights[1].setSpecular(1.0, 1.0, 1.0, 1.0);
+    this.lights[1].setConstantAttenuation(1.0);
+    this.lights[1].setLinearAttenuation(0.01);
+    this.lights[1].setQuadraticAttenuation(0.001);
     this.lights[1].enable();
     this.lights[1].setVisible(true);
     this.lights[1].update();
+
+    this.lights[2].setPosition(0.0, 150.0, 0.0, 1.0);
+    this.lights[2].setDiffuse(1.0, 1.0, 1.0, 1.0);
+    this.lights[2].enable();
+    this.lights[2].update();
   }
 
   initCameras() {
     this.camera = new CGFcamera(
-      0.4, // Field of View
+      0.6, // Field of View
       0.1, // Near Clipping Plane
       1000, // Far Clipping Plane
-      vec3.fromValues(200, 200, 200), // Camera Position
+      vec3.fromValues(400, 400, 400), // Camera Position
       vec3.fromValues(0, 0, 0) // Target Position
     );
   }
 
   resetCamera() {
     console.log("Resetting camera");
-    this.camera.setPosition(vec3.fromValues(200, 200, 200));
+    this.camera.setPosition(vec3.fromValues(400, 400, 400));
     this.camera.setTarget(vec3.fromValues(0, 0, 0));
-    this.cameraZoom = 0.4;
+    this.cameraZoom = 0.6;
     this.updateProjectionMatrix()
   }
 
@@ -138,6 +150,98 @@ export class MyScene extends CGFscene {
         'Earth': 1
     };
   }
+
+  initTextures() {
+    // Brick Material
+    this.brickTex = new CGFtexture(this, './textures/bricks.jpg');
+
+    this.brickMaterial = new CGFappearance(this);
+    this.brickMaterial.setAmbient(0.9, 0.9, 0.9, 1);
+    this.brickMaterial.setDiffuse(0.9, 0.9, 0.9, 1);
+    this.brickMaterial.setSpecular(0.1, 0.1, 0.1, 1);
+    this.brickMaterial.setShininess(10.0);
+    this.brickMaterial.setTexture(this.brickTex);
+    this.brickMaterial.setTextureWrap('REPEAT', 'REPEAT');
+
+    // Concrete Material
+    this.concreteTex = new CGFtexture(this, './textures/concrete.jpg');
+
+    this.concreteMaterial = new CGFappearance(this);
+    this.concreteMaterial.setAmbient(0.9, 0.9, 0.9, 1);
+    this.concreteMaterial.setDiffuse(0.9, 0.9, 0.9, 1);
+    this.concreteMaterial.setSpecular(0.1, 0.1, 0.1, 1);
+    this.concreteMaterial.setShininess(10.0);
+    this.concreteMaterial.setTexture(this.concreteTex);
+    this.concreteMaterial.setTextureWrap('REPEAT', 'REPEAT');
+
+    // Patterned Concrete Wall Material
+    this.concreteWallTex = new CGFtexture(this, './textures/patterned_concrete_wall.jpg');
+
+    this.concreteWallMaterial = new CGFappearance(this);
+    this.concreteWallMaterial.setAmbient(0.9, 0.9, 0.9, 1);
+    this.concreteWallMaterial.setDiffuse(0.9, 0.9, 0.9, 1);
+    this.concreteWallMaterial.setSpecular(0.1, 0.1, 0.1, 1);
+    this.concreteWallMaterial.setShininess(10.0);
+    this.concreteWallMaterial.setTexture(this.concreteWallTex);
+    this.concreteWallMaterial.setTextureWrap('REPEAT', 'REPEAT');
+
+    // Brick Pavement Material
+    this.brickPavementTex = new CGFtexture(this, './textures/brick_pavement.jpg');
+
+    this.brickPavementMaterial = new CGFappearance(this);
+    this.brickPavementMaterial.setAmbient(0.9, 0.9, 0.9, 1);
+    this.brickPavementMaterial.setDiffuse(0.9, 0.9, 0.9, 1);
+    this.brickPavementMaterial.setSpecular(0.1, 0.1, 0.1, 1);
+    this.brickPavementMaterial.setShininess(10.0);
+    this.brickPavementMaterial.setTexture(this.brickPavementTex);
+    this.brickPavementMaterial.setTextureWrap('REPEAT', 'REPEAT');
+
+    // Concrete Tiles Material
+    this.concreteTilesTex = new CGFtexture(this, './textures/concrete_tiles.jpg');
+
+    this.concreteTilesMaterial = new CGFappearance(this);
+    this.concreteTilesMaterial.setAmbient(0.9, 0.9, 0.9, 1);
+    this.concreteTilesMaterial.setDiffuse(0.9, 0.9, 0.9, 1);
+    this.concreteTilesMaterial.setSpecular(0.1, 0.1, 0.1, 1);
+    this.concreteTilesMaterial.setShininess(10.0);
+    this.concreteTilesMaterial.setTexture(this.concreteTilesTex);
+    this.concreteTilesMaterial.setTextureWrap('REPEAT', 'REPEAT');
+
+    // Sandstone Brick Wall Material
+    this.sandstoneBrickWallTex = new CGFtexture(this, './textures/sandstone_brick_wall.jpg');
+
+    this.sandstoneBrickWallMaterial = new CGFappearance(this);
+    this.sandstoneBrickWallMaterial.setAmbient(0.9, 0.9, 0.9, 1);
+    this.sandstoneBrickWallMaterial.setDiffuse(0.9, 0.9, 0.9, 1);
+    this.sandstoneBrickWallMaterial.setSpecular(0.1, 0.1, 0.1, 1);
+    this.sandstoneBrickWallMaterial.setShininess(10.0);
+    this.sandstoneBrickWallMaterial.setTexture(this.sandstoneBrickWallTex);
+    this.sandstoneBrickWallMaterial.setTextureWrap('REPEAT', 'REPEAT');
+
+    // Seaworn Sandstone Material
+    this.seawornSandstoneTex = new CGFtexture(this, './textures/seaworn_sandstone_brick.jpg');
+
+    this.seawornSandstoneMaterial = new CGFappearance(this);
+    this.seawornSandstoneMaterial.setAmbient(0.9, 0.9, 0.9, 1);
+    this.seawornSandstoneMaterial.setDiffuse(0.9, 0.9, 0.9, 1);
+    this.seawornSandstoneMaterial.setSpecular(0.1, 0.1, 0.1, 1);
+    this.seawornSandstoneMaterial.setShininess(10.0);
+    this.seawornSandstoneMaterial.setTexture(this.seawornSandstoneTex);
+    this.seawornSandstoneMaterial.setTextureWrap('REPEAT', 'REPEAT');
+
+    // Brick Wall Material
+    this.brickWallTex = new CGFtexture(this, './textures/brick_wall_13.jpg');
+
+    this.brickWallMaterial = new CGFappearance(this);
+    this.brickWallMaterial.setAmbient(0.9, 0.9, 0.9, 1);
+    this.brickWallMaterial.setDiffuse(0.9, 0.9, 0.9, 1);
+    this.brickWallMaterial.setSpecular(0.1, 0.1, 0.1, 1);
+    this.brickWallMaterial.setShininess(10.0);
+    this.brickWallMaterial.setTexture(this.brickWallTex);
+    this.brickWallMaterial.setTextureWrap('REPEAT', 'REPEAT');
+
+  }
+
 
   update(t) {
     this.checkKeys();
