@@ -28,9 +28,6 @@ export class MyInterface2 extends CGFinterface {
         // Object Selection
         this.gui.add(this.scene, 'selectedObject', this.scene.objectList).name('Selected Object');
 
-        // Material Selection
-        this.gui.add(this.scene, 'selectedMaterial', this.scene.materialIDs).name('Selected Material');
-
         // Scale Factor
         this.gui.add(this.scene, 'scaleFactor', 0.1, 50.0).name('Scale');
 

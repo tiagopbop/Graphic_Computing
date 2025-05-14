@@ -2,7 +2,7 @@ import { CGFscene, CGFcamera, CGFaxis, CGFappearance } from "../lib/CGF.js";
 import { MyPlane } from "./MyPlane.js";
 import { MySphere } from "./geometric/MySphere.js"
 import { MyCube } from "./geometric/MyCube.js";
-import { MyBuilding } from "./objects/MyBuilding.js";
+import { MyBuilding_Old } from "./objects/MyBuilding_Old.js";
 
 /**
  * MyScene

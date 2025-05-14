@@ -1,8 +1,11 @@
-import { CGFscene, CGFcamera, CGFaxis, CGFappearance, CGFtexture } from "../lib/CGF.js";
+import { CGFscene, CGFcamera, CGFaxis} from "../lib/CGF.js";
+import { TextureManager } from "./textures/TextureManager.js";
 import { MyPlane } from "./MyPlane.js";
 import { MySphere } from "./geometric/MySphere.js"
 import { MyCube } from "./geometric/MyCube.js";
+import { MyBuilding_Old } from "./objects/MyBuilding_Old.js";
 import { MyBuilding } from "./objects/MyBuilding.js";
+import { MyWindow } from "./objects/MyWindow.js";
 
 /**
  * MyScene
@@ -17,8 +20,8 @@ export class MyScene2 extends CGFscene {
 
     this.initCameras();
     this.initLights();
-    this.initMaterials();
-    this.initTextures();
+
+    this.textureManager = new TextureManager(this);
 
     //Background color
     this.gl.clearColor(0, 0, 0, 1.0);
@@ -39,7 +42,9 @@ export class MyScene2 extends CGFscene {
         new MyPlane(this, 64),
         new MySphere(this, 5, 128, 128),
         new MyCube(this, 1, 1, 1),
-        new MyBuilding(this)
+        new MyBuilding_Old(this),
+        new MyBuilding(this),
+        new MyWindow(this)
     ];
 
     //Ob
@@ -47,10 +52,12 @@ export class MyScene2 extends CGFscene {
       'Plane' : 0,
       'Sphere' : 1,
       'Cube' : 2,
-      'Building' : 3
+      'BuildingOld' : 3,
+      'Building' : 4,
+      'Window' : 5
     }
 
-    this.selectedObject = 3;
+    this.selectedObject = 4;
     this.selectedMaterial = 0;
     this.displayAxis = true;
     this.scaleFactor = 10.0;
@@ -124,124 +131,6 @@ export class MyScene2 extends CGFscene {
       console.log(text);
   }
 
-  initMaterials() {
-    // Default Material
-    this.defaultMaterial = new CGFappearance(this);
-    this.defaultMaterial.setAmbient(0.1, 0.1, 0.1, 0.3); // Low ambient, semi-transparent
-    this.defaultMaterial.setDiffuse(0.2, 0.2, 0.2, 0.3); // Low diffuse, semi-transparent
-    this.defaultMaterial.setSpecular(1.0, 1.0, 1.0, 0.3); // High specular for shininess
-    this.defaultMaterial.setShininess(150.0); // High shininess for a glass-like effect
-    
-
-    // Earth Material
-    this.earthMaterial = new CGFappearance(this);
-    this.earthMaterial.setAmbient(0.7, 0.7, 0.7, 1.0);
-    this.earthMaterial.setDiffuse(1.0, 1.0, 1.0, 1.0);
-    this.earthMaterial.setSpecular(0.5, 0.5, 0.5, 1.0);
-    this.earthMaterial.setShininess(20.0);
-    this.earthMaterial.loadTexture('./textures/earth.png') // Load the earth texture
-    this.earthMaterial.setTextureWrap('REPEAT', 'REPEAT');
-
-    // Material Lists
-    this.materials = [this.defaultMaterial, this.earthMaterial];
-
-    this.materialIDs = {
-        'Default': 0,
-        'Earth': 1
-    };
-  }
-
-  initTextures() {
-    // Brick Material
-    this.brickTex = new CGFtexture(this, './textures/bricks.jpg');
-
-    this.brickMaterial = new CGFappearance(this);
-    this.brickMaterial.setAmbient(0.9, 0.9, 0.9, 1);
-    this.brickMaterial.setDiffuse(0.9, 0.9, 0.9, 1);
-    this.brickMaterial.setSpecular(0.1, 0.1, 0.1, 1);
-    this.brickMaterial.setShininess(10.0);
-    this.brickMaterial.setTexture(this.brickTex);
-    this.brickMaterial.setTextureWrap('REPEAT', 'REPEAT');
-
-    // Concrete Material
-    this.concreteTex = new CGFtexture(this, './textures/concrete.jpg');
-
-    this.concreteMaterial = new CGFappearance(this);
-    this.concreteMaterial.setAmbient(0.9, 0.9, 0.9, 1);
-    this.concreteMaterial.setDiffuse(0.9, 0.9, 0.9, 1);
-    this.concreteMaterial.setSpecular(0.1, 0.1, 0.1, 1);
-    this.concreteMaterial.setShininess(10.0);
-    this.concreteMaterial.setTexture(this.concreteTex);
-    this.concreteMaterial.setTextureWrap('REPEAT', 'REPEAT');
-
-    // Patterned Concrete Wall Material
-    this.concreteWallTex = new CGFtexture(this, './textures/patterned_concrete_wall.jpg');
-
-    this.concreteWallMaterial = new CGFappearance(this);
-    this.concreteWallMaterial.setAmbient(0.9, 0.9, 0.9, 1);
-    this.concreteWallMaterial.setDiffuse(0.9, 0.9, 0.9, 1);
-    this.concreteWallMaterial.setSpecular(0.1, 0.1, 0.1, 1);
-    this.concreteWallMaterial.setShininess(10.0);
-    this.concreteWallMaterial.setTexture(this.concreteWallTex);
-    this.concreteWallMaterial.setTextureWrap('REPEAT', 'REPEAT');
-
-    // Brick Pavement Material
-    this.brickPavementTex = new CGFtexture(this, './textures/brick_pavement.jpg');
-
-    this.brickPavementMaterial = new CGFappearance(this);
-    this.brickPavementMaterial.setAmbient(0.9, 0.9, 0.9, 1);
-    this.brickPavementMaterial.setDiffuse(0.9, 0.9, 0.9, 1);
-    this.brickPavementMaterial.setSpecular(0.1, 0.1, 0.1, 1);
-    this.brickPavementMaterial.setShininess(10.0);
-    this.brickPavementMaterial.setTexture(this.brickPavementTex);
-    this.brickPavementMaterial.setTextureWrap('REPEAT', 'REPEAT');
-
-    // Concrete Tiles Material
-    this.concreteTilesTex = new CGFtexture(this, './textures/concrete_tiles.jpg');
-
-    this.concreteTilesMaterial = new CGFappearance(this);
-    this.concreteTilesMaterial.setAmbient(0.9, 0.9, 0.9, 1);
-    this.concreteTilesMaterial.setDiffuse(0.9, 0.9, 0.9, 1);
-    this.concreteTilesMaterial.setSpecular(0.1, 0.1, 0.1, 1);
-    this.concreteTilesMaterial.setShininess(10.0);
-    this.concreteTilesMaterial.setTexture(this.concreteTilesTex);
-    this.concreteTilesMaterial.setTextureWrap('REPEAT', 'REPEAT');
-
-    // Sandstone Brick Wall Material
-    this.sandstoneBrickWallTex = new CGFtexture(this, './textures/sandstone_brick_wall.jpg');
-
-    this.sandstoneBrickWallMaterial = new CGFappearance(this);
-    this.sandstoneBrickWallMaterial.setAmbient(0.9, 0.9, 0.9, 1);
-    this.sandstoneBrickWallMaterial.setDiffuse(0.9, 0.9, 0.9, 1);
-    this.sandstoneBrickWallMaterial.setSpecular(0.1, 0.1, 0.1, 1);
-    this.sandstoneBrickWallMaterial.setShininess(10.0);
-    this.sandstoneBrickWallMaterial.setTexture(this.sandstoneBrickWallTex);
-    this.sandstoneBrickWallMaterial.setTextureWrap('REPEAT', 'REPEAT');
-
-    // Seaworn Sandstone Material
-    this.seawornSandstoneTex = new CGFtexture(this, './textures/seaworn_sandstone_brick.jpg');
-
-    this.seawornSandstoneMaterial = new CGFappearance(this);
-    this.seawornSandstoneMaterial.setAmbient(0.9, 0.9, 0.9, 1);
-    this.seawornSandstoneMaterial.setDiffuse(0.9, 0.9, 0.9, 1);
-    this.seawornSandstoneMaterial.setSpecular(0.1, 0.1, 0.1, 1);
-    this.seawornSandstoneMaterial.setShininess(10.0);
-    this.seawornSandstoneMaterial.setTexture(this.seawornSandstoneTex);
-    this.seawornSandstoneMaterial.setTextureWrap('REPEAT', 'REPEAT');
-
-    // Brick Wall Material
-    this.brickWallTex = new CGFtexture(this, './textures/brick_wall_13.jpg');
-
-    this.brickWallMaterial = new CGFappearance(this);
-    this.brickWallMaterial.setAmbient(0.9, 0.9, 0.9, 1);
-    this.brickWallMaterial.setDiffuse(0.9, 0.9, 0.9, 1);
-    this.brickWallMaterial.setSpecular(0.1, 0.1, 0.1, 1);
-    this.brickWallMaterial.setShininess(10.0);
-    this.brickWallMaterial.setTexture(this.brickWallTex);
-    this.brickWallMaterial.setTextureWrap('REPEAT', 'REPEAT');
-
-  }
-
 
   update(t) {
     this.checkKeys();
@@ -295,7 +184,6 @@ export class MyScene2 extends CGFscene {
     this.pushMatrix();
     this.scale(this.scaleFactor, this.scaleFactor, this.scaleFactor);
 
-    this.materials[this.selectedMaterial].apply();
     this.objects[this.selectedObject].display();
 
     this.popMatrix();
