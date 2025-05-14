@@ -39,30 +39,15 @@ export class MyScene extends CGFscene {
 
     this.panoram = new MyPanoram(this, this.panoramMaterial);
     this.sphere = new MySphere(this,40,20);
-    this.plane = new MyPlane(this,64);
-    //this.forest = new MyForest(this, 4, 5, 200); // 4 rows, 5 cols, spacing = 3
+    this.plane = new MyPlane(this,64,0,10,0,10);
+    this.forest = new MyForest(this, 35,35);
 
     this.selectedObject = 0;
     this.selectedMaterial = 0;
     this.displayAxis = true;
     this.scaleFactor = 20.0;
     this.ambientlightFactor = 0.3;
-    this.cameraZoom = 0.4;
-
-
-    // Parameters
-    const rows = 4;  // Number of rows
-    const cols = 5;  // Number of columns
-
-    // Create forest matrix
-    this.forest = [];
-    for (let i = 0; i < rows; i++) {
-        this.forest[i] = [];
-        for (let j = 0; j < cols; j++) {
-            this.forest[i][j] = new MyTree(this, 12, 6, 6, 2 ); // Adjust slices/stacks as needed
-        }
-    }
-
+    this.cameraZoom = 1;
 
   }
   initLights() {
@@ -85,11 +70,11 @@ export class MyScene extends CGFscene {
 
   initCameras() {
     this.camera = new CGFcamera(
-      0.4, // Field of View
+      this.cameraZoom, // Field of View
       0.1, // Near Clipping Plane
       1000, // Far Clipping Plane
-      vec3.fromValues(100, 100, 100), // Camera Position
-      vec3.fromValues(0, 0, 0) // Target Position
+      vec3.fromValues(10, 10, 10), // Camera Position
+      vec3.fromValues(0, 10, 0) // Target Position
     );
   }
 
@@ -161,7 +146,7 @@ export class MyScene extends CGFscene {
     this.leavesMaterial.setDiffuse(0.2, 0.6, 0.2, 1.0);
     this.leavesMaterial.setSpecular(0.05, 0.2, 0.05, 1.0);
     this.leavesMaterial.setShininess(10.0);
-    this.leavesMaterial.loadTexture('./textures/leaves.jpg');
+    this.leavesMaterial.loadTexture('./textures/leavesbw.jpg');
     this.leavesMaterial.setTextureWrap('REPEAT', 'REPEAT');
 
     // Earth Material
@@ -174,6 +159,7 @@ export class MyScene extends CGFscene {
     this.grassMaterial.setTextureWrap('REPEAT', 'REPEAT');
 
     this.panoramMaterial = new CGFtexture(this,'./textures/panoram2.jpg');
+
 
   }
 
@@ -238,12 +224,20 @@ export class MyScene extends CGFscene {
     this.pushMatrix();
     this.grassMaterial.apply();
     this.rotate(-Math.PI/2,1,0,0);
-    this.scale(180,180,1);
+    this.scale(500,500,1);
     this.plane.display();
     this.popMatrix();
     
-    
-    for (let i = 0; i < this.forest.length; i++) {
+    //forest
+    this.pushMatrix();
+    this.scale(0.5,0.5,0.5);
+    this.forest.display();
+    this.popMatrix();
+
+    this.setDefaultAppearance();
+
+
+   /* for (let i = 0; i < this.forest.length; i++) {
       for (let j = 0; j < this.forest[i].length; j++) {
           const tree = this.forest[i][j];
   
@@ -284,7 +278,7 @@ export class MyScene extends CGFscene {
           this.popMatrix();
       }
   }
-  
+  */
 
 
 
