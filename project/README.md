@@ -11,6 +11,8 @@
 
 ### Panorama
 ![panorama.png](screenshots/panorama.png)
+![panorama2.png](screenshots/panorama2.png)
+
 
 ### Building
 ![building.png](screenshots/building.png)
