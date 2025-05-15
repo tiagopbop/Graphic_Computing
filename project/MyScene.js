@@ -1,4 +1,5 @@
 import { CGFscene, CGFcamera, CGFaxis, CGFappearance, CGFtexture } from "../lib/CGF.js";
+import { TextureManager } from "./textures/TextureManager.js";
 import { MyPlane } from "./MyPlane.js";
 import { MySphere } from "./geometric/MySphere.js"
 import { MyCube } from "./geometric/MyCube.js";
@@ -6,7 +7,7 @@ import { MyBuilding } from "./objects/MyBuilding.js";
 import {MyTree} from "./geometric/MyTree.js";
 import {MyForest} from "./geometric/MyForest.js";
 import { MyPanoram } from "./objects/MyPanoram.js";
-
+import { MyHeli } from "./objects/MyHeli.js";
 
 /**
  * MyScene
@@ -21,7 +22,8 @@ export class MyScene extends CGFscene {
 
     this.initCameras();
     this.initLights();
-    this.initMaterials();
+
+    this.textureManager = new TextureManager(this);
 
     //Background color
     this.gl.clearColor(0, 0, 0, 1.0);
@@ -37,10 +39,12 @@ export class MyScene extends CGFscene {
 
     this.axis = new CGFaxis(this, 20, 1);
 
-    this.panoram = new MyPanoram(this, this.panoramMaterial);
+    this.panoram = new MyPanoram(this, this.textureManager.panoramaTexture);
     this.sphere = new MySphere(this,40,20);
     this.plane = new MyPlane(this,64,0,10,0,10);
-    this.forest = new MyForest(this, 35,35);
+    this.forest = new MyForest(this, 20,20);
+    this.heli = new MyHeli(this)
+    this.building = new MyBuilding(this)
 
     this.selectedObject = 0;
     this.selectedMaterial = 0;
@@ -48,6 +52,7 @@ export class MyScene extends CGFscene {
     this.scaleFactor = 20.0;
     this.ambientlightFactor = 0.3;
     this.cameraZoom = 1;
+    this.speedFactor = 1;
 
   }
   initLights() {
@@ -87,85 +92,39 @@ export class MyScene extends CGFscene {
   }
 
 
-  checkKeys() {
-    var text = "Keys pressed: ";
-    var keysPressed = false;
+  checkKeys(t) {
+    const f = this.speedFactor;
+    if (this.gui.isKeyPressed("KeyW")) 
+      this.heli.accelerate(4 * f);
 
-    // Check for key codes e.g. in https://keycode.info/
-    if (this.gui.isKeyPressed("KeyW")) {
-      text += " W ";
-      keysPressed = true;
+    if (this.gui.isKeyPressed("KeyS")) 
+      this.heli.accelerate(-1.5*f);
+
+    if (this.gui.isKeyPressed("KeyA")) 
+      this.heli.turn(0.02 * f);
+   
+    if (this.gui.isKeyPressed("KeyD"))
+       this.heli.turn(-0.02 * f);
+
+    if (this.gui.isKeyPressed("KeyP"))
+       this.heli.takeOff();
+
+    if (this.gui.isKeyPressed("KeyL"))
+       this.heli.land();
+
+    if (this.gui.isKeyPressed("KeyR")) 
+      this.heli.reset();
     }
-
-    if (this.gui.isKeyPressed("KeyS")) {
-      text += " S ";
-      keysPressed = true;
-    }
-    if (keysPressed)
-      console.log(text);
-  }
-
-  initMaterials() {
-    // Default Material
-    this.defaultMaterial = new CGFappearance(this);
-    this.defaultMaterial.setAmbient(0.1, 0.1, 0.1, 0.3); // Low ambient, semi-transparent
-    this.defaultMaterial.setDiffuse(0.2, 0.2, 0.2, 0.3); // Low diffuse, semi-transparent
-    this.defaultMaterial.setSpecular(1.0, 1.0, 1.0, 0.3); // High specular for shininess
-    this.defaultMaterial.setShininess(150.0); // High shininess for a glass-like effect
-
-    // Earth Material
-    this.earthMaterial = new CGFappearance(this);
-    this.earthMaterial.setAmbient(0.7, 0.7, 0.7, 1.0);
-    this.earthMaterial.setDiffuse(1.0, 1.0, 1.0, 1.0);
-    this.earthMaterial.setSpecular(0.5, 0.5, 0.5, 1.0);
-    this.earthMaterial.setShininess(20.0);
-    this.earthMaterial.loadTexture('./textures/earth.png') // Load the earth texture
-    this.earthMaterial.setTextureWrap('REPEAT', 'REPEAT');
-
-    // Interior Material
-   /* this.panoramMaterial = new CGFappearance(this);
-    this.panoramMaterial.setAmbient(0.7, 0.7, 0.7, 1.0);
-    this.panoramMaterial.setDiffuse(1.0, 1.0, 1.0, 1.0);
-    this.panoramMaterial.setSpecular(0.5, 0.5, 0.5, 1.0);
-    this.panoramMaterial.setShininess(20.0);
-    this.panoramMaterial.loadTexture('./textures/panoram.jpg') // Load the earth texture
-    this.panoramMaterial.setTextureWrap('REPEAT', 'REPEAT');
-    */
-    // Trunk material
-    this.trunkMaterial = new CGFappearance(this);
-    this.trunkMaterial.setAmbient(0.3, 0.2, 0.1, 1.0);
-    this.trunkMaterial.setDiffuse(0.4, 0.3, 0.2, 1.0);
-    this.trunkMaterial.setSpecular(0.1, 0.1, 0.1, 1.0);
-    this.trunkMaterial.setShininess(10.0);
-    this.trunkMaterial.loadTexture('./textures/trunk.jpg');
-    this.trunkMaterial.setTextureWrap('REPEAT', 'REPEAT');
-
-    // Leaves material
-    this.leavesMaterial = new CGFappearance(this);
-    this.leavesMaterial.setAmbient(0.1, 0.4, 0.1, 1.0);
-    this.leavesMaterial.setDiffuse(0.2, 0.6, 0.2, 1.0);
-    this.leavesMaterial.setSpecular(0.05, 0.2, 0.05, 1.0);
-    this.leavesMaterial.setShininess(10.0);
-    this.leavesMaterial.loadTexture('./textures/leavesbw.jpg');
-    this.leavesMaterial.setTextureWrap('REPEAT', 'REPEAT');
-
-    // Earth Material
-    this.grassMaterial = new CGFappearance(this);
-    this.grassMaterial.setAmbient(0.7, 0.7, 0.7, 1.0);
-    this.grassMaterial.setDiffuse(1.0, 1.0, 1.0, 1.0);
-    this.grassMaterial.setSpecular(0.5, 0.5, 0.5, 1.0);
-    this.grassMaterial.setShininess(20.0);
-    this.grassMaterial.loadTexture('./textures/grass.jpg') // Load the earth texture
-    this.grassMaterial.setTextureWrap('REPEAT', 'REPEAT');
-
-    this.panoramMaterial = new CGFtexture(this,'./textures/panoram2.jpg');
-
-
-  }
 
   update(t) {
-    this.checkKeys();
-  }
+    const now = performance.now();
+    const delta = now - (this.lastTime || now);
+    this.lastTime = now;
+
+    this.checkKeys(t);
+    this.heli.update(delta, this.speedFactor);
+}
+
 
   setDefaultAppearance() {
     this.setAmbient(0.5, 0.5, 0.5, 1.0);
@@ -222,7 +181,7 @@ export class MyScene extends CGFscene {
 
     //plane
     this.pushMatrix();
-    this.grassMaterial.apply();
+    this.textureManager.grassMaterial.apply();
     this.rotate(-Math.PI/2,1,0,0);
     this.scale(500,500,1);
     this.plane.display();
@@ -233,6 +192,18 @@ export class MyScene extends CGFscene {
     this.scale(0.5,0.5,0.5);
     this.forest.display();
     this.popMatrix();
+
+    //heli
+    this.pushMatrix();
+    this.translate(0,14.3,0);
+    this.heli.display();
+    this.popMatrix();
+    
+    //building
+    this.pushMatrix();
+    this.building.display();
+    this.popMatrix();
+
 
     this.setDefaultAppearance();
 
