@@ -6,7 +6,7 @@ import { MyBuilding } from "./objects/MyBuilding.js";
 import {MyTree} from "./geometric/MyTree.js";
 import {MyForest} from "./geometric/MyForest.js";
 import { MyPanoram } from "./objects/MyPanoram.js";
-
+import { MyHeli } from "./objects/MyHeli.js";
 
 /**
  * MyScene
@@ -39,30 +39,18 @@ export class MyScene extends CGFscene {
 
     this.panoram = new MyPanoram(this, this.panoramMaterial);
     this.sphere = new MySphere(this,40,20);
-    this.plane = new MyPlane(this,64);
-    //this.forest = new MyForest(this, 4, 5, 200); // 4 rows, 5 cols, spacing = 3
+    this.plane = new MyPlane(this,64,0,10,0,10);
+    this.forest = new MyForest(this, 20,20);
+    this.heli = new MyHeli(this)
+    this.building = new MyBuilding(this)
 
     this.selectedObject = 0;
     this.selectedMaterial = 0;
     this.displayAxis = true;
     this.scaleFactor = 20.0;
     this.ambientlightFactor = 0.3;
-    this.cameraZoom = 0.4;
-
-
-    // Parameters
-    const rows = 4;  // Number of rows
-    const cols = 5;  // Number of columns
-
-    // Create forest matrix
-    this.forest = [];
-    for (let i = 0; i < rows; i++) {
-        this.forest[i] = [];
-        for (let j = 0; j < cols; j++) {
-            this.forest[i][j] = new MyTree(this, 12, 6, 6, 2 ); // Adjust slices/stacks as needed
-        }
-    }
-
+    this.cameraZoom = 1;
+    this.speedFactor = 1;
 
   }
   initLights() {
@@ -85,11 +73,11 @@ export class MyScene extends CGFscene {
 
   initCameras() {
     this.camera = new CGFcamera(
-      0.4, // Field of View
+      this.cameraZoom, // Field of View
       0.1, // Near Clipping Plane
       1000, // Far Clipping Plane
-      vec3.fromValues(100, 100, 100), // Camera Position
-      vec3.fromValues(0, 0, 0) // Target Position
+      vec3.fromValues(10, 10, 10), // Camera Position
+      vec3.fromValues(0, 10, 0) // Target Position
     );
   }
 
@@ -102,23 +90,30 @@ export class MyScene extends CGFscene {
   }
 
 
-  checkKeys() {
-    var text = "Keys pressed: ";
-    var keysPressed = false;
+  checkKeys(t) {
+    const f = this.speedFactor;
+    if (this.gui.isKeyPressed("KeyW")) 
+      this.heli.accelerate(4 * f);
 
-    // Check for key codes e.g. in https://keycode.info/
-    if (this.gui.isKeyPressed("KeyW")) {
-      text += " W ";
-      keysPressed = true;
+    if (this.gui.isKeyPressed("KeyS")) 
+      this.heli.accelerate(-1.5*f);
+
+    if (this.gui.isKeyPressed("KeyA")) 
+      this.heli.turn(0.02 * f);
+   
+    if (this.gui.isKeyPressed("KeyD"))
+       this.heli.turn(-0.02 * f);
+
+    if (this.gui.isKeyPressed("KeyP"))
+       this.heli.takeOff();
+
+    if (this.gui.isKeyPressed("KeyL"))
+       this.heli.land();
+
+    if (this.gui.isKeyPressed("KeyR")) 
+      this.heli.reset();
     }
 
-    if (this.gui.isKeyPressed("KeyS")) {
-      text += " S ";
-      keysPressed = true;
-    }
-    if (keysPressed)
-      console.log(text);
-  }
 
   initMaterials() {
     // Default Material
@@ -161,7 +156,7 @@ export class MyScene extends CGFscene {
     this.leavesMaterial.setDiffuse(0.2, 0.6, 0.2, 1.0);
     this.leavesMaterial.setSpecular(0.05, 0.2, 0.05, 1.0);
     this.leavesMaterial.setShininess(10.0);
-    this.leavesMaterial.loadTexture('./textures/leaves.jpg');
+    this.leavesMaterial.loadTexture('./textures/leavesbw.jpg');
     this.leavesMaterial.setTextureWrap('REPEAT', 'REPEAT');
 
     // Earth Material
@@ -175,11 +170,18 @@ export class MyScene extends CGFscene {
 
     this.panoramMaterial = new CGFtexture(this,'./textures/panoram2.jpg');
 
+
   }
 
   update(t) {
-    this.checkKeys();
-  }
+    const now = performance.now();
+    const delta = now - (this.lastTime || now);
+    this.lastTime = now;
+
+    this.checkKeys(t);
+    this.heli.update(delta, this.speedFactor);
+}
+
 
   setDefaultAppearance() {
     this.setAmbient(0.5, 0.5, 0.5, 1.0);
@@ -238,12 +240,32 @@ export class MyScene extends CGFscene {
     this.pushMatrix();
     this.grassMaterial.apply();
     this.rotate(-Math.PI/2,1,0,0);
-    this.scale(180,180,1);
+    this.scale(500,500,1);
     this.plane.display();
     this.popMatrix();
     
+    //forest
+    this.pushMatrix();
+    this.scale(0.5,0.5,0.5);
+    this.forest.display();
+    this.popMatrix();
+
+    //heli
+    this.pushMatrix();
+    this.translate(0,2,0);
+    this.heli.display();
+    this.popMatrix();
     
-    for (let i = 0; i < this.forest.length; i++) {
+    //building
+    this.pushMatrix();
+    this.building.display();
+    this.popMatrix();
+
+
+    this.setDefaultAppearance();
+
+
+   /* for (let i = 0; i < this.forest.length; i++) {
       for (let j = 0; j < this.forest[i].length; j++) {
           const tree = this.forest[i][j];
   
@@ -284,7 +306,7 @@ export class MyScene extends CGFscene {
           this.popMatrix();
       }
   }
-  
+  */
 
 
 

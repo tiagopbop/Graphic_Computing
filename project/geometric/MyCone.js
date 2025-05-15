@@ -1,12 +1,5 @@
-import {CGFobject} from '../../lib/CGF.js';
+import { CGFobject } from '../../lib/CGF.js';
 
-/**
-* MyCone
-* @constructor
-* @param scene - Reference to MyScene object
-* @param slices - number of divisions around the Y axis
-* @param stacks - number of divisions along the Y axis (currently unused)
-*/
 export class MyCone extends CGFobject {
     constructor(scene, slices, stacks) {
         super(scene);
@@ -19,51 +12,58 @@ export class MyCone extends CGFobject {
         this.vertices = [];
         this.indices = [];
         this.normals = [];
-        this.texCoords = []; // Add texCoords array
+        this.texCoords = [];
 
-        const alphaAng = 2 * Math.PI / this.slices;
-
-        // Base vertices (rim)
-        let ang = 0;
-        for (let i = 0; i < this.slices; i++) {
-            let x = Math.cos(ang);
-            let z = -Math.sin(ang);
-            this.vertices.push(x, 0, z); // Rim vertex
-            this.normals.push(x, Math.cos(Math.PI / 4), z); // Approx normal for side
-            this.texCoords.push(i / this.slices, 1); // Texture coords for sides (u along slices)
-            ang += alphaAng;
-        }
+        const alpha = 2 * Math.PI / this.slices;
 
         // Tip vertex
-        this.vertices.push(0, 1, 0); 
-        this.normals.push(0, 1, 0);
-        this.texCoords.push(0.5, 0); // Tip texture coord
+        this.vertices.push(0, 1, 0);
+        this.normals.push(0, 1, 0); 
+        this.texCoords.push(0.5, 0); // Tip center
 
-        // Indices for sides
-        for (let i = 0; i < this.slices; i++) {
-            this.indices.push(i, (i + 1) % this.slices, this.slices); // Triangle fan for sides
+        // Side rim vertices
+        for (let i = 0; i <= this.slices; i++) {
+            const ang = i * alpha;
+            const x = Math.cos(ang);
+            const z = -Math.sin(ang);
+
+            this.vertices.push(x, 0, z);
+
+            // sloped normals
+            const nx = x;
+            const ny = Math.cos(Math.PI / 4); 
+            const nz = z;
+            const len = Math.sqrt(nx * nx + ny * ny + nz * nz);
+            this.normals.push(nx / len, ny / len, nz / len);
+
+            this.texCoords.push(i / this.slices, 1);
         }
 
-        // Base cap (center vertex)
-        const baseCenterIndex = this.vertices.length / 3;
-        this.vertices.push(0, 0, 0); 
-        this.normals.push(0, -1, 0);
-        this.texCoords.push(0.5, 0.5); // Center of texture
+        // Side indices
+        for (let i = 1; i <= this.slices; i++) {
+            this.indices.push(0, i, i + 1);
+        }
 
-        // Rim vertices for base cap
-        ang = 0;
-        for (let i = 0; i < this.slices; i++) {
-            let x = Math.cos(ang);
-            let z = -Math.sin(ang);
+        // Base center vertex
+        const baseCenterIndex = this.vertices.length / 3;
+        this.vertices.push(0, 0, 0);
+        this.normals.push(0, -1, 0);
+        this.texCoords.push(0.5, 0.5);
+
+        // Base rim
+        for (let i = 0; i <= this.slices; i++) {
+            const ang = i * alpha;
+            const x = Math.cos(ang);
+            const z = -Math.sin(ang);
+
             this.vertices.push(x, 0, z);
             this.normals.push(0, -1, 0);
-            this.texCoords.push(0.5 + 0.5 * x, 0.5 - 0.5 * z); // Circular mapping
-            ang += alphaAng;
+            this.texCoords.push(0.5 + 0.5 * x, 0.5 - 0.5 * z);
         }
 
-        // Indices for base cap
-        for (let i = 0; i < this.slices; i++) {
-            this.indices.push(baseCenterIndex, baseCenterIndex + i + 1, baseCenterIndex + ((i + 1) % this.slices) + 1);
+        // Base indices (triangle fan)
+        for (let i = 1; i <= this.slices; i++) {
+            this.indices.push(baseCenterIndex, baseCenterIndex + i + 1, baseCenterIndex + i);
         }
 
         this.primitiveType = this.scene.gl.TRIANGLES;
@@ -71,9 +71,7 @@ export class MyCone extends CGFobject {
     }
 
     updateBuffers(complexity) {
-        this.slices = 3 + Math.round(9 * complexity); // Complexity varies 0-1, so slices vary 3-12
-
-        // Reinitialize buffers
+        this.slices = 3 + Math.round(9 * complexity);
         this.initBuffers();
         this.initNormalVizBuffers();
     }
