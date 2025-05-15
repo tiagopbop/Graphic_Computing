@@ -33,7 +33,7 @@ export class MyTree extends CGFobject {
 
         //Trunk 
         this.scene.pushMatrix();
-        this.scene.trunkMaterial.apply();
+        this.scene.textureManager.trunkMaterial.apply();
         this.scene.scale(this.trunkRadius / 1.5, this.trunkHeight * 2, this.trunkRadius / 1.8);
         this.trunk.display();
         this.scene.popMatrix();
@@ -48,7 +48,7 @@ export class MyTree extends CGFobject {
         crownMaterial.setDiffuse(r * 1.0, g * 1.0, b * 1.0, 1.0);
         crownMaterial.setSpecular(0.1, 0.1, 0.1, 1.0);
         crownMaterial.setShininess(10.0);
-        crownMaterial.setTexture(this.scene.leavesMaterial.texture); // gray texture
+        crownMaterial.setTexture(this.scene.textureManager.leavesMaterial.texture); // gray texture
         crownMaterial.setTextureWrap('REPEAT', 'REPEAT');
 
         for (let i = 0; i < this.numPyramids; i++) {
