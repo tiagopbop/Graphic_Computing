@@ -30,6 +30,10 @@ export class MyInterface extends CGFinterface {
 
         // Ambient Light
         this.gui.add(this.scene, 'ambientlightFactor', 0.1, 1.0).name('Ambient Light');
+        
+        //heli speed
+        this.gui.add(this.scene, 'speedFactor', 0.1, 3.0).name('Speed Factor');
+
 
 
         // Lights

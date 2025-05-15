@@ -6,7 +6,7 @@ export class MyForest extends CGFobject {
         super(scene);
         this.trees = [];
 
-        const planeRadius = 500;         //extra to have trees when moving
+        const planeRadius = 320;         //extra to have trees when moving
         const exclusionRadius = 80;       //space for building
         const totalWidth = planeRadius * 2;
 

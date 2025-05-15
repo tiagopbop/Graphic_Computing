@@ -6,7 +6,7 @@ import { MyBuilding } from "./objects/MyBuilding.js";
 import {MyTree} from "./geometric/MyTree.js";
 import {MyForest} from "./geometric/MyForest.js";
 import { MyPanoram } from "./objects/MyPanoram.js";
-
+import { MyHeli } from "./objects/MyHeli.js";
 
 /**
  * MyScene
@@ -40,7 +40,9 @@ export class MyScene extends CGFscene {
     this.panoram = new MyPanoram(this, this.panoramMaterial);
     this.sphere = new MySphere(this,40,20);
     this.plane = new MyPlane(this,64,0,10,0,10);
-    this.forest = new MyForest(this, 35,35);
+    this.forest = new MyForest(this, 20,20);
+    this.heli = new MyHeli(this)
+    this.building = new MyBuilding(this)
 
     this.selectedObject = 0;
     this.selectedMaterial = 0;
@@ -48,6 +50,7 @@ export class MyScene extends CGFscene {
     this.scaleFactor = 20.0;
     this.ambientlightFactor = 0.3;
     this.cameraZoom = 1;
+    this.speedFactor = 1;
 
   }
   initLights() {
@@ -87,23 +90,30 @@ export class MyScene extends CGFscene {
   }
 
 
-  checkKeys() {
-    var text = "Keys pressed: ";
-    var keysPressed = false;
+  checkKeys(t) {
+    const f = this.speedFactor;
+    if (this.gui.isKeyPressed("KeyW")) 
+      this.heli.accelerate(4 * f);
 
-    // Check for key codes e.g. in https://keycode.info/
-    if (this.gui.isKeyPressed("KeyW")) {
-      text += " W ";
-      keysPressed = true;
+    if (this.gui.isKeyPressed("KeyS")) 
+      this.heli.accelerate(-1.5*f);
+
+    if (this.gui.isKeyPressed("KeyA")) 
+      this.heli.turn(0.02 * f);
+   
+    if (this.gui.isKeyPressed("KeyD"))
+       this.heli.turn(-0.02 * f);
+
+    if (this.gui.isKeyPressed("KeyP"))
+       this.heli.takeOff();
+
+    if (this.gui.isKeyPressed("KeyL"))
+       this.heli.land();
+
+    if (this.gui.isKeyPressed("KeyR")) 
+      this.heli.reset();
     }
 
-    if (this.gui.isKeyPressed("KeyS")) {
-      text += " S ";
-      keysPressed = true;
-    }
-    if (keysPressed)
-      console.log(text);
-  }
 
   initMaterials() {
     // Default Material
@@ -164,8 +174,14 @@ export class MyScene extends CGFscene {
   }
 
   update(t) {
-    this.checkKeys();
-  }
+    const now = performance.now();
+    const delta = now - (this.lastTime || now);
+    this.lastTime = now;
+
+    this.checkKeys(t);
+    this.heli.update(delta, this.speedFactor);
+}
+
 
   setDefaultAppearance() {
     this.setAmbient(0.5, 0.5, 0.5, 1.0);
@@ -233,6 +249,18 @@ export class MyScene extends CGFscene {
     this.scale(0.5,0.5,0.5);
     this.forest.display();
     this.popMatrix();
+
+    //heli
+    this.pushMatrix();
+    this.translate(0,2,0);
+    this.heli.display();
+    this.popMatrix();
+    
+    //building
+    this.pushMatrix();
+    this.building.display();
+    this.popMatrix();
+
 
     this.setDefaultAppearance();
 
