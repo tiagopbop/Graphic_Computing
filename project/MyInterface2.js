@@ -17,13 +17,36 @@ export class MyInterface2 extends CGFinterface {
         // https://github.com/dataarts/dat.gui/blob/master/API.md
         this.gui = new dat.GUI();
 
+
         this.initKeys();
+
+        this.cameraPan = {
+            leftRight: 0,
+            upDown: 0,
+        };
+
+        this.prevPanLR = 0;
+        this.prevPanUD = 0;
 
         // Axis Display
         this.gui.add(this.scene, 'displayAxis').name("Display axis");
 
         // Camera Zoom
         this.gui.add(this.scene, 'cameraZoom', 0.1, 1.0).name('Camera Zoom');
+
+        // Left and Right Camera Movement
+        this.gui.add(this.cameraPan, 'leftRight', -200, 200).name('Left/Right Camera Movement').onChange((value) => {
+            let delta = value - this.prevPanLR;
+            this.scene.moveCameraLR(delta);
+            this.prevPanLR = value;
+        });
+
+        // Up and Down Camera Movement
+        this.gui.add(this.cameraPan, 'upDown', -200, 200).name('Up/Down Camera Movement').onChange((value) => {
+            let delta = value - this.prevPanUD;
+            this.scene.moveCameraUD(delta);
+            this.prevPanUD = value;
+        });
 
         // Object Selection
         this.gui.add(this.scene, 'selectedObject', this.scene.objectList).name('Selected Object');
@@ -59,6 +82,15 @@ export class MyInterface2 extends CGFinterface {
 
         // Reset Camera FOV
         this.gui.add(this.scene, 'resetCamera').name('Reset Camera');
+
+        // Add a button to reset the camera
+        this.gui.add({ resetPan: () => {
+            this.scene.resetCamera();
+            this.cameraPan.leftRight = 0;
+            this.cameraPan.upDown = 0;
+            this.prevPanLR = 0;
+            this.prevPanUD = 0;
+        }}, 'resetPan').name('Reset Camera Position');
 
         return true;
     }

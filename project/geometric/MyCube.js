@@ -1,6 +1,6 @@
 import {CGFobject} from '../../lib/CGF.js';
 /**
- * MySphere
+ * MyCube
  * @constructor
  * @param scene - Reference to MyScene object
  * @param height - The height of the Cube (i.e., the up-most vertices)

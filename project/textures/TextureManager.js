@@ -16,18 +16,21 @@ export class TextureManager {
         this.helipadTexture = new CGFtexture(this.scene, './textures/objects/heliport-round.jpg');
         this.garageTexture = new CGFtexture(this.scene, './textures/objects/garage_door.jpg');
         this.logoTexture = new CGFtexture(this.scene, './textures/objects/logo.jpg');
+        this.metalTexture = new CGFtexture(this.scene, './textures/plain/Metal046A.jpg');
+        this.metalTexture2 = new CGFtexture(this.scene, './textures/plain/Metal046B.jpg');
+        this.metalTextureOG = new CGFtexture(this.scene, './textures/plain/Metal046A.jpg');
 
         this.earthTexture = new CGFtexture(this.scene, './textures/plain/earth.png');
         this.trunkTexture = new CGFtexture(this.scene, './textures/plain/trunk.jpg');
         this.leavesTexture = new CGFtexture(this.scene, './textures/plain/leavesbw.jpg');
         this.grassTexture = new CGFtexture(this.scene, './textures/plain/grass.jpg');
-        this.shadowTexture = new CGFtexture(this.scene, './textures/plain/shadow3.png'); 
+        this.shadowTexture = new CGFtexture(this.scene, './textures/plain/shadow3.png');
         this.leavesGradTexture = new CGFtexture(this.scene, './textures/plain/leavesbwgradient.png');
-        
+
         this.fireTexture = new CGFtexture(this.scene, './textures/plain/fire.jpg')
 
         this.panoramaTexture = new CGFtexture(this.scene, './textures/plain/panoram2.jpg');
-    
+
         this.roadTexture = new CGFtexture(this.scene,'./textures/plain/road2.jpg');
     }
 
@@ -53,6 +56,31 @@ export class TextureManager {
         this.panoramMaterial = this.createPanoramMaterial(this.panoramaTexture);
 
         this.roadMaterial = this.createRoadMaterial(this.roadTexture);
+        // Original Metal
+        this.metalMaterialOG = this.createMaterial(this.metalTextureOG);
+        this.metalMaterialOG.setAmbient(0.5, 0.5, 0.5, 1);
+        this.metalMaterialOG.setDiffuse(0.5, 0.5, 0.5, 1);
+        this.metalMaterialOG.setSpecular(0.5, 0.5, 0.5, 1);
+
+
+        // Yellow Metal
+        this.metalMaterial = this.createMaterial(this.metalTexture);
+        this.metalMaterial.setAmbient(1.0, 1.0, 0.2, 1); // Brighter yellow tone
+        this.metalMaterial.setDiffuse(1.0, 1.0, 0.2, 1);
+        this.metalMaterial.setSpecular(1.0, 1.0, 0.5, 1);
+
+        // Red Metal
+        this.metalMaterial2 = this.createMaterial(this.metalTexture2);
+        this.metalMaterial2.setAmbient(1.0, 0.2, 0.2, 1); // Brighter red tone
+        this.metalMaterial2.setDiffuse(1.0, 0.2, 0.2, 1);
+        this.metalMaterial2.setSpecular(1.0, 0.4, 0.4, 1);
+
+        // Darker Metal
+        this.metalMaterialOG2 = this.createMaterial(this.metalTextureOG);
+        this.metalMaterialOG2.setAmbient(0.35, 0.35, 0.35, 1);
+        this.metalMaterialOG2.setDiffuse(0.35, 0.35, 0.35, 1);
+        this.metalMaterialOG2.setSpecular(0.35, 0.35, 0.35, 1);
+
     }
 
     createMaterial(texture) {
