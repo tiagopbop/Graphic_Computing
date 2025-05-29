@@ -50,6 +50,12 @@ export class TextureManager {
         this.metalMaterial2.setDiffuse(1.0, 0.2, 0.2, 1);
         this.metalMaterial2.setSpecular(1.0, 0.4, 0.4, 1);
 
+        // Darker Metal
+        this.metalMaterialOG2 = this.createMaterial(this.metalTextureOG);
+        this.metalMaterialOG2.setAmbient(0.35, 0.35, 0.35, 1);
+        this.metalMaterialOG2.setDiffuse(0.35, 0.35, 0.35, 1);
+        this.metalMaterialOG2.setSpecular(0.35, 0.35, 0.35, 1);
+
     }
 
     createMaterial(texture) {
