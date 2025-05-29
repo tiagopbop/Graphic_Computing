@@ -117,8 +117,9 @@ export class MyScene extends CGFscene {
     if (this.gui.isKeyPressed("KeyD"))
        this.heli.turn(-0.02 * f);
 
-    if (this.gui.isKeyPressed("KeyP"))
-       this.heli.takeOff();
+    if (this.gui.isKeyPressed("KeyP")){
+      this.heli.takeOff();
+    }
 
     if (this.gui.isKeyPressed("KeyL"))
        this.heli.land();
@@ -242,7 +243,9 @@ export class MyScene extends CGFscene {
 
     //heli
     this.pushMatrix();
-    this.translate(0,14.3,0);
+    this.translate(0,15,-80);
+    // this.rotate(-Math.PI/2,0,1,0);
+    this.scale(.5, .5, .5);
     this.heli.display();
     this.popMatrix();
     

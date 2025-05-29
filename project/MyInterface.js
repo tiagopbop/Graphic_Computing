@@ -19,6 +19,7 @@ export class MyInterface extends CGFinterface {
 
         this.initKeys();
 
+
         // Axis Display
         this.gui.add(this.scene, 'displayAxis').name("Display axis");
 

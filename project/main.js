@@ -8,8 +8,8 @@ import { MyInterface2 } from './MyInterface2.js';
 function main()
 {
     var app = new CGFapplication(document.body);
-    var myScene2 = new MyScene2();
-    var myInterface2 = new MyInterface2();
+    var myScene2 = new MyScene();
+    var myInterface2 = new MyInterface();
 
     app.init();
 

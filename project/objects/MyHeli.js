@@ -67,12 +67,44 @@ export class MyHeli extends CGFobject {
 
         this.bucketString = new MyCube(scene, 5, .3, .3);
         this.bucket = new MyCylinder(scene, 64, 64);
+
+        // Motion state
+        this.position = { x: 0, y: 0, z: 0 };
+        this.velocity = { x: 0, z: 0 };
+        this.acceleration = { x: 0, z: 0 };
+        this.orientation = 0;
+
+        // Vertical control
+        this.targetY = 0;
+        this.verticalSpeed = 5; // units/second
+        this.cruiseAltitude = 30;
+        this.in_air = false;
+
+        this.maxSpeed = 10;
+        this.drag = 0.92;
+
+        this.initBuffers();
     }
 
-    update(deltaTime) {
-        this.helixRotationAngle += deltaTime * 0.005;
+    // update(deltaTime) {
+    //     this.helixRotationAngle += deltaTime * 0.005;
+    // }
+
+    display() {
+        this.scene.pushMatrix();
+        this.scene.translate(this.position.x, this.position.y, this.position.z);
+        this.scene.rotate(this.orientation, 0, 1, 0);
+
+        this.scene.scale(1, 1, 1);
+        // this.scene.defaultAppearance?.apply();
+
+        // super.display();
+        this.scene.rotate(-Math.PI/2,0,1,0);
+        this.displayHeli();
+        this.scene.popMatrix();
     }
-    display(){
+
+    displayHeli(){
         // Display The Top Helix
         this.scene.pushMatrix();
         this.scene.translate(9.5,2,.25);
@@ -108,7 +140,6 @@ export class MyHeli extends CGFobject {
         this.scene.rotate(Math.PI/2, 0, 0, 0);
         this.displayWings(1);
         this.scene.popMatrix();
-
 
         // Display The Bucket
         // this.displayBucket();
@@ -392,27 +423,6 @@ export class MyHeli extends CGFobject {
         this.scene.scale(.25, .25, .25);
         this.displayHelix(.35);
         this.scene.popMatrix();
-        this.scene = scene;
-        this.slices = slices;
-        this.stacks = stacks;
-        this.radius = radius;
-
-        // Motion state
-        this.position = { x: 0, y: 0, z: 0 };
-        this.velocity = { x: 0, z: 0 };
-        this.acceleration = { x: 0, z: 0 };
-        this.orientation = 0;
-
-        // Vertical control
-        this.targetY = 0;
-        this.verticalSpeed = 5; // units/second
-        this.cruiseAltitude = 10;
-        this.in_air = false;
-
-        this.maxSpeed = 10;
-        this.drag = 0.92;
-
-        this.initBuffers();
     }
 
     displayTailFlap(){
@@ -483,7 +493,7 @@ export class MyHeli extends CGFobject {
         this.scene.popMatrix();
     }
 
-}
+
 
     takeOff() {
         if (!this.in_air) {
@@ -558,17 +568,5 @@ export class MyHeli extends CGFobject {
         } else {
             this.position.y = this.targetY;
         }
-    }
-
-    display() {
-        this.scene.pushMatrix();
-        this.scene.translate(this.position.x, this.position.y, this.position.z);
-        this.scene.rotate(this.orientation, 0, 1, 0);
-
-        this.scene.scale(1, 1, 1);
-        this.scene.defaultAppearance?.apply();
-
-        super.display();
-        this.scene.popMatrix();
     }
 }
