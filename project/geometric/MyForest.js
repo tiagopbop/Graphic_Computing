@@ -1,32 +1,27 @@
 import { CGFobject } from '../../lib/CGF.js';
 import { MyTree } from './MyTree.js';
+import { MyFire } from './MyFire.js';
 
 export class MyForest extends CGFobject {
-    constructor(scene, rows, cols) {
+    constructor(scene, rows, cols, onFireSide = false, width = 310, length = 700) {
         super(scene);
         this.trees = [];
+        this.onFireSide = onFireSide;
 
-        const planeRadius = 320;         //extra to have trees when moving
-        const exclusionRadius = 80;       //space for building
-        const totalWidth = planeRadius * 2;
+        const totalWidth = width;
+        const totalLength = length;
 
         const spacingX = totalWidth / cols;
-        const spacingZ = totalWidth / rows;
+        const spacingZ = totalLength / rows;
 
         for (let i = 0; i < rows; i++) {
             for (let j = 0; j < cols; j++) {
-                // Random offset - no grid lock
-                const offsetX = (Math.random() - 0.5) * spacingX * 0.7;
-                const offsetZ = (Math.random() - 0.5) * spacingZ * 0.7;
+                const offsetX = (Math.random() - 0.5) * spacingX * 0.6;
+                const offsetZ = (Math.random() - 0.5) * spacingZ * 0.6;
 
-                const x = -planeRadius + j * spacingX + offsetX;
-                const z = -planeRadius + i * spacingZ + offsetZ;
+                const x = -totalWidth / 2 + j * spacingX + offsetX;
+                const z = -totalLength / 2 + i * spacingZ + offsetZ;
 
-                // Skip trees near the center
-                const distToCenter = Math.sqrt(x * x + z * z);
-                if (distToCenter < exclusionRadius || distToCenter > planeRadius) continue;
-
-                // Random parameters
                 const tiltAngle = Math.random() * 15;
                 const tiltAxis = Math.random() > 0.5 ? 'x' : 'z';
                 const trunkRadius = 0.5 + Math.random() * 0.5;
@@ -38,26 +33,42 @@ export class MyForest extends CGFobject {
                     [0.8, 0.8, 0.2],  // yellow
                     [0.9, 0.5, 0.1],  // orange
                     [0.9, 0.2, 0.1],  // red
-                  ];
-                
+                ];
                 const crownColor = foliageColors[Math.floor(Math.random() * foliageColors.length)];
-                const treeScale = 5 + Math.random();  
+                const treeScale = 5 + Math.random();
+
+                const on_fire = onFireSide;
 
                 this.trees.push({
                     x, z, scale: treeScale,
+                    on_fire,
                     tree: new MyTree(scene, tiltAngle, tiltAxis, trunkRadius, height, crownColor)
                 });
             }
         }
+
+        if (onFireSide) {
+            this.forestFire = new MyFire(scene, totalWidth, totalLength);
+        }
+    }
+
+    update(timeFactor) {
+        if (this.forestFire) {
+            this.forestFire.update(timeFactor);
+        }
     }
 
     display() {
-        for (const { x, z, scale, tree } of this.trees) {
+        for (const { x, z, scale, tree, on_fire } of this.trees) {
             this.scene.pushMatrix();
             this.scene.translate(x, 0, z);
             this.scene.scale(scale, scale, scale);
-            tree.display();
+            tree.display(false);
             this.scene.popMatrix();
+        }
+
+        if (this.forestFire) {
+            this.forestFire.display();
         }
     }
 }

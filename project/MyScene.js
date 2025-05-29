@@ -41,18 +41,29 @@ export class MyScene extends CGFscene {
 
     this.panoram = new MyPanoram(this, this.textureManager.panoramaTexture);
     this.sphere = new MySphere(this,40,20);
-    this.plane = new MyPlane(this,64,0,10,0,10);
-    this.forest = new MyForest(this, 20,20);
+    this.plane = new MyPlane(this,64,0,30,0,30);
+    this.road = new MyPlane(this,64,0,1,0,35);
+
+    
+ 
+    
     this.heli = new MyHeli(this)
     this.building = new MyBuilding(this)
 
     this.selectedObject = 0;
     this.selectedMaterial = 0;
-    this.displayAxis = true;
+    this.displayAxis = false;
     this.scaleFactor = 20.0;
     this.ambientlightFactor = 0.3;
     this.cameraZoom = 1;
     this.speedFactor = 1;
+    this.leftForest1 = new MyForest(this, 10, 7, false,310,350);  // normal trees (10,7)
+    this.leftForest2 = new MyForest(this, 10, 7, false,310,350);
+    
+    this.rightForest1 = new MyForest(this, 15, 7, true); // trees on fire (15,7)
+    this.rightForest2 = new MyForest(this, 15, 7, false);
+    
+
 
   }
   initLights() {
@@ -123,6 +134,9 @@ export class MyScene extends CGFscene {
 
     this.checkKeys(t);
     this.heli.update(delta, this.speedFactor);
+    const timeFactor = t / 100 % 100;
+    this.rightForest1.update(timeFactor);
+
 }
 
 
@@ -186,12 +200,45 @@ export class MyScene extends CGFscene {
     this.scale(500,500,1);
     this.plane.display();
     this.popMatrix();
-    
-    //forest
+
+    //road
     this.pushMatrix();
-    this.scale(0.5,0.5,0.5);
-    this.forest.display();
+    this.textureManager.roadMaterial.apply();
+    this.translate(0, 0.05, 0); 
+    this.rotate(-Math.PI/2,1,0,0);
+    this.translate(-6, -75, 0); 
+    this.scale(15, 300, 1);     
+    this.road.display();
     this.popMatrix();
+
+    // left forest 1
+    this.pushMatrix();
+    this.scale(0.5, 0.5, 0.5);
+    this.translate(-185, 0, -230);
+    this.leftForest1.display();
+    this.popMatrix();
+
+    // left forest 2
+    this.pushMatrix();
+    this.scale(0.5, 0.5, 0.5);
+    this.translate(-185, 0, 230);
+    this.leftForest2.display();
+    this.popMatrix();
+
+    // right forest 1 
+    this.pushMatrix();
+    this.scale(0.5, 0.5, 0.5);
+    this.translate(225, 0, -50);
+    this.rightForest1.display();
+    this.popMatrix();
+
+    //right forest 2
+    this.pushMatrix();
+    this.scale(0.5, 0.5, 0.5);
+    this.translate(225, 0, 50); // ← was -150
+    this.rightForest2.display();
+    this.popMatrix();
+
 
     //heli
     this.pushMatrix();
@@ -201,6 +248,7 @@ export class MyScene extends CGFscene {
     
     //building
     this.pushMatrix();
+    this.translate(0,0,-80);
     this.building.display();
     this.popMatrix();
 

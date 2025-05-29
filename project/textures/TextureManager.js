@@ -21,8 +21,14 @@ export class TextureManager {
         this.trunkTexture = new CGFtexture(this.scene, './textures/plain/trunk.jpg');
         this.leavesTexture = new CGFtexture(this.scene, './textures/plain/leavesbw.jpg');
         this.grassTexture = new CGFtexture(this.scene, './textures/plain/grass.jpg');
+        this.shadowTexture = new CGFtexture(this.scene, './textures/plain/shadow3.png'); 
+        this.leavesGradTexture = new CGFtexture(this.scene, './textures/plain/leavesbwgradient.png');
+        
+        this.fireTexture = new CGFtexture(this.scene, './textures/plain/fire.jpg')
 
         this.panoramaTexture = new CGFtexture(this.scene, './textures/plain/panoram2.jpg');
+    
+        this.roadTexture = new CGFtexture(this.scene,'./textures/plain/road2.jpg');
     }
 
     initMaterials() {
@@ -39,9 +45,14 @@ export class TextureManager {
         this.trunkMaterial = this.createTrunkMaterial(this.trunkTexture);
         this.leavesMaterial = this.createLeavesMaterial(this.leavesTexture);
         this.grassMaterial = this.createGrassMaterial(this.grassTexture);
+        this.shadowMaterial = this.createShadowMaterial(this.shadowTexture);
+        this.leavesGradMaterial = this.createLeavesGradMaterial(this.leavesGradTexture);
+
+        this.fireMaterial = this.createFireMaterial(this.fireTexture);
 
         this.panoramMaterial = this.createPanoramMaterial(this.panoramaTexture);
 
+        this.roadMaterial = this.createRoadMaterial(this.roadTexture);
     }
 
     createMaterial(texture) {
@@ -66,6 +77,18 @@ export class TextureManager {
         return leavesMaterial;
     }
 
+    createLeavesGradMaterial(texture){
+        const leavesGradMaterial = new CGFappearance(this.scene);
+        leavesGradMaterial.setAmbient(0.1, 0.4, 0.1, 1.0);
+        leavesGradMaterial.setDiffuse(0.2, 0.6, 0.2, 1.0);
+        leavesGradMaterial.setSpecular(0.05, 0.2, 0.05, 1.0);
+        leavesGradMaterial.setShininess(10.0);
+        leavesGradMaterial.setTexture(texture);
+        leavesGradMaterial.setTextureWrap('REPEAT', 'REPEAT');
+        return leavesGradMaterial;
+    }
+
+
     createGrassMaterial(texture){
         const grassMaterial = new CGFappearance(this.scene);
         grassMaterial.setAmbient(0.7, 0.7, 0.7, 1.0);
@@ -75,6 +98,17 @@ export class TextureManager {
         grassMaterial.setTexture(texture);
         grassMaterial.setTextureWrap('REPEAT', 'REPEAT');
         return grassMaterial;
+    }
+
+    createShadowMaterial(texture){
+        const shadowMaterial = new CGFappearance(this.scene);
+        shadowMaterial.setAmbient(0.7, 0.7, 0.7, 1.0);
+        shadowMaterial.setDiffuse(1.0, 1.0, 1.0, 1.0);
+        shadowMaterial.setSpecular(0.5, 0.5, 0.5, 1.0);
+        shadowMaterial.setShininess(20.0);
+        shadowMaterial.setTexture(texture);
+        shadowMaterial.setTextureWrap('REPEAT', 'REPEAT');
+        return shadowMaterial;
     }
 
     createTrunkMaterial(texture){
@@ -87,6 +121,18 @@ export class TextureManager {
         trunkMaterial.setTextureWrap('REPEAT', 'REPEAT');
         return trunkMaterial;
     }
+
+    createFireMaterial(texture){
+        const fireMaterial = new CGFappearance(this.scene);
+        fireMaterial.setAmbient(0.3, 0.2, 0.1, 1.0);
+        fireMaterial.setDiffuse(0.4, 0.3, 0.2, 1.0);
+        fireMaterial.setSpecular(0.1, 0.1, 0.1, 1.0);
+        fireMaterial.setShininess(10.0);
+        fireMaterial.setTexture(texture);
+        fireMaterial.setTextureWrap('REPEAT', 'REPEAT');
+        return fireMaterial;
+    }
+
 
     createEarthMaterial(texture){
         const earthMaterial = new CGFappearance(this.scene);
@@ -104,5 +150,16 @@ export class TextureManager {
         panoramMaterial.setEmission(1, 1, 1, 1);
         panoramMaterial.setTexture(texture);
         return panoramMaterial;
+    }
+
+    createRoadMaterial(texture){
+        const grassMaterial = new CGFappearance(this.scene);
+        grassMaterial.setAmbient(0.7, 0.7, 0.7, 1.0);
+        grassMaterial.setDiffuse(1.0, 1.0, 1.0, 1.0);
+        grassMaterial.setSpecular(0.5, 0.5, 0.5, 1.0);
+        grassMaterial.setShininess(20.0);
+        grassMaterial.setTexture(texture);
+        grassMaterial.setTextureWrap('REPEAT', 'REPEAT');
+        return grassMaterial;
     }
 }
