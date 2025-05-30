@@ -8,6 +8,7 @@ import {MyTree} from "./geometric/MyTree.js";
 import {MyForest} from "./geometric/MyForest.js";
 import { MyPanoram } from "./objects/MyPanoram.js";
 import { MyHeli } from "./objects/MyHeli.js";
+import { MyLake } from './geometric/MyLake.js';
 
 /**
  * MyScene
@@ -43,6 +44,7 @@ export class MyScene extends CGFscene {
     this.sphere = new MySphere(this,40,20);
     this.plane = new MyPlane(this,64,0,30,0,30);
     this.road = new MyPlane(this,64,0,1,0,35);
+    this.lake = new MyLake(this, 50, 32); 
 
     
  
@@ -128,17 +130,27 @@ export class MyScene extends CGFscene {
       this.heli.reset();
     }
 
-  update(t) {
-    const now = performance.now();
-    const delta = now - (this.lastTime || now);
-    this.lastTime = now;
-
-    this.checkKeys(t);
-    this.heli.update(delta, this.speedFactor);
-    const timeFactor = t / 100 % 100;
-    this.rightForest1.update(timeFactor);
-
-}
+    update(t) {
+      const now = performance.now();
+      const delta = now - (this.lastTime || now);
+      this.lastTime = now;
+  
+      this.checkKeys(t);
+      this.heli.update(delta, this.speedFactor);
+  
+      let heliState = 'normal';
+      if (this.heli.isLanding()) {
+          heliState = 'landing';
+      } else if (this.heli.isTakingOff()) {
+          heliState = 'takeoff';
+      }
+      
+      this.building.updateHelipadState(heliState, delta);
+  
+      const timeFactor = t / 100 % 100;
+      this.rightForest1.update(timeFactor);
+      this.lake.update(timeFactor);
+  }
 
 
   setDefaultAppearance() {
@@ -215,14 +227,14 @@ export class MyScene extends CGFscene {
     // left forest 1
     this.pushMatrix();
     this.scale(0.5, 0.5, 0.5);
-    this.translate(-185, 0, -230);
+    this.translate(-185, 0, -250);
     this.leftForest1.display();
     this.popMatrix();
 
     // left forest 2
     this.pushMatrix();
     this.scale(0.5, 0.5, 0.5);
-    this.translate(-185, 0, 230);
+    this.translate(-185, 0, 250);
     this.leftForest2.display();
     this.popMatrix();
 
@@ -244,7 +256,6 @@ export class MyScene extends CGFscene {
     //heli
     this.pushMatrix();
     this.translate(0,15,-80);
-    // this.rotate(-Math.PI/2,0,1,0);
     this.scale(.5, .5, .5);
     this.heli.display();
     this.popMatrix();
@@ -255,6 +266,12 @@ export class MyScene extends CGFscene {
     this.building.display();
     this.popMatrix();
 
+    // lake
+    this.pushMatrix();
+    this.translate(-70,0.1, -9);
+    this.scale(-0.5,0,-0.5);
+    this.lake.display();
+    this.popMatrix();
 
     this.setDefaultAppearance();
 

@@ -11,7 +11,6 @@ export class MyFire extends CGFobject {
         this.fireShader = new CGFshader(scene.gl, "shaders/fire.vert", "shaders/fire.frag");
    
         this.createFlameMatrix();
-        this.scene.textureManager.createFireMaterial();
     }
 
     createFlameMatrix() {
@@ -89,10 +88,7 @@ export class MyFire extends CGFobject {
         
         if (this.scene.textureManager && this.scene.textureManager.fireMaterial) {
             this.scene.textureManager.fireMaterial.apply();
-        } else {
-            this.fireMaterial.apply();
         }
-        
         for (let i = 0; i < this.flames.length; i++) {
             const flame = this.flames[i];
             

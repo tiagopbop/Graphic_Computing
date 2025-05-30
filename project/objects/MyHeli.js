@@ -510,6 +510,16 @@ export class MyHeli extends CGFobject {
         }
     }
 
+    isTakingOff() {
+        return this.targetY === this.cruiseAltitude && this.position.y != this.cruiseAltitude;
+    }
+    
+    isLanding() {
+        return this.targetY === 0 && this.position.y != 0;
+}
+
+
+
     reset() {
         this.position = { x: 0, y: 0, z: 0 };
         this.velocity = { x: 0, z: 0 };

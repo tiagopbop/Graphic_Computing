@@ -13,7 +13,9 @@ export class TextureManager {
         this.concreteTilesTexture = new CGFtexture(this.scene, './textures/plain/concrete_tiles.jpg');
         this.windowTexture = new CGFtexture(this.scene, './textures/objects/Industrial_window.jpg');
         this.doorTexture = new CGFtexture(this.scene, './textures/objects/mahogany_dark_door.jpg');
-        this.helipadTexture = new CGFtexture(this.scene, './textures/objects/heliport-round.jpg');
+        this.helipadHTexture = new CGFtexture(this.scene, './textures/plain/helih.png');
+        this.helipadDownTexture = new CGFtexture(this.scene, './textures/plain/helidown.png');
+        this.helipadUpTexture = new CGFtexture(this.scene, './textures/plain/heliup.png');      
         this.garageTexture = new CGFtexture(this.scene, './textures/objects/garage_door.jpg');
         this.logoTexture = new CGFtexture(this.scene, './textures/objects/logo.jpg');
         this.metalTexture = new CGFtexture(this.scene, './textures/plain/Metal046A.jpg');
@@ -26,6 +28,8 @@ export class TextureManager {
         this.grassTexture = new CGFtexture(this.scene, './textures/plain/grass.jpg');
         this.shadowTexture = new CGFtexture(this.scene, './textures/plain/shadow3.png');
         this.leavesGradTexture = new CGFtexture(this.scene, './textures/plain/leavesbwgradient.png');
+        this.waterTexture = new CGFtexture(this.scene, './textures/plain/water.jpg');
+        this.waterMapTexture = new CGFtexture(this.scene, './textures/plain/water_map.jpg'); // Add this!
 
         this.fireTexture = new CGFtexture(this.scene, './textures/plain/fire.jpg')
 
@@ -40,7 +44,10 @@ export class TextureManager {
         this.sandstoneBrickWallMaterial = this.createMaterial(this.sandstoneBrickWallTexture);
         this.concreteTilesMaterial = this.createMaterial(this.concreteTilesTexture);
         this.doorMaterial = this.createMaterial(this.doorTexture);
-        this.helipadMaterial = this.createMaterial(this.helipadTexture);
+        this.helipadHMaterial = this.createMaterial(this.helipadHTexture);
+        this.helipadDownMaterial = this.createMaterial(this.helipadDownTexture);
+        this.helipadUpMaterial = this.createMaterial(this.helipadUpTexture);
+
         this.garageMaterial = this.createMaterial(this.garageTexture);
         this.logoMaterial = this.createMaterial(this.logoTexture);
 
@@ -50,7 +57,7 @@ export class TextureManager {
         this.grassMaterial = this.createGrassMaterial(this.grassTexture);
         this.shadowMaterial = this.createShadowMaterial(this.shadowTexture);
         this.leavesGradMaterial = this.createLeavesGradMaterial(this.leavesGradTexture);
-
+        this.waterMaterial = this.createWaterMaterial(this.waterTexture);
         this.fireMaterial = this.createFireMaterial(this.fireTexture);
 
         this.panoramMaterial = this.createPanoramMaterial(this.panoramaTexture);
@@ -161,6 +168,19 @@ export class TextureManager {
         return fireMaterial;
     }
 
+    createWaterMaterial(texture, mapTexture) {
+        const waterMaterial = new CGFappearance(this.scene);
+        waterMaterial.setAmbient(0.2, 0.4, 0.6, 1.0);
+        waterMaterial.setDiffuse(0.3, 0.5, 0.8, 0.8);
+        waterMaterial.setSpecular(0.8, 0.9, 1.0, 1.0);
+        waterMaterial.setShininess(120.0);
+        waterMaterial.setTexture(texture);
+        if (mapTexture) {
+            waterMaterial.setActiveTexture(mapTexture);
+        }
+        waterMaterial.setTextureWrap('REPEAT', 'REPEAT');       
+        return waterMaterial;
+    }
 
     createEarthMaterial(texture){
         const earthMaterial = new CGFappearance(this.scene);

@@ -1,4 +1,4 @@
-import { CGFobject } from "../../lib/CGF.js";
+import { CGFobject, CGFshader } from "../../lib/CGF.js";
 import { MyCube } from "../geometric/MyCube.js";
 import { MyWindow } from "./MyWindow.js";
 import { MyCircle } from "../geometric/MyCircle.js";
@@ -64,10 +64,47 @@ export class MyBuilding extends CGFobject {
         this.garageDoor = new MyCube(scene, 6.3, 3, 0);
 
         // Helipad
-        this.helipad = new MyCircle(scene, 64, 1);
+        this.helipad = new MyCircle(scene, 64, 1);        
+        this.helipadBlendFactor = 0.0; 
+        this.helipadTargetTexture = 'H'; 
+        this.blinkSpeed = 2.5; 
+        this.blinkTimer = 0;
+        this.shouldBlink = false;
+        this.blinkIntensity = 0; 
+        if (scene && scene.gl) {
+            this.helipadShader = new CGFshader(scene.gl, "shaders/helipad.vert", "shaders/helipad.frag");
+        }
 
         // Logo
         this.logo = new MyCube(scene, .75, 4.5, 0);
+    }
+
+
+    updateHelipadState(heliState, deltaTime) {
+        const transitionSpeed = 0.02;
+    
+        // Determine if we should blink
+        this.shouldBlink = (heliState === 'landing' || heliState === 'takeoff');
+    
+        if (this.shouldBlink) {
+            this.blinkTimer += deltaTime / 1000; // Convert ms to seconds
+            
+            const cyclePos = (this.blinkTimer % this.blinkSpeed) / this.blinkSpeed;
+            this.blinkIntensity = (Math.sin(cyclePos * Math.PI * 2 - Math.PI/2) + 1) / 2;
+            
+            // Alternate between UP and DOWN based on blink intensity
+            if (heliState === 'landing') {
+                this.helipadTargetTexture = 'DOWN';
+                this.helipadBlendFactor = this.blinkIntensity;
+            } else { // takeoff
+                this.helipadTargetTexture = 'UP';
+                this.helipadBlendFactor = this.blinkIntensity;
+            }
+        } else {
+            this.helipadTargetTexture = 'H';
+            this.helipadBlendFactor = Math.max(0.0, this.helipadBlendFactor - transitionSpeed);
+            this.blinkTimer = 0;
+        }
     }
 
     display() {
@@ -127,12 +164,37 @@ export class MyBuilding extends CGFobject {
 
         // Helipad
         this.scene.pushMatrix();
-        this.scene.textureManager.helipadMaterial.apply();
-        this.scene.textureManager.helipadMaterial.setAmbient(0.3, 0.3, 0.3, 1);
-        this.scene.translate(4.5, 12.6, -.5); // Adjust the position of the helipad
-        this.scene.rotate(-Math.PI / 2, 1, 0, 0); // Rotate the helipad to face the correct direction
-        this.scene.scale(3, 3, 1); // Scale the helipad
-        this.helipad.display();  // Render the helipad
+
+        this.scene.translate(4.5, 12.6, -.5);
+        this.scene.rotate(-Math.PI / 2, 1, 0, 0);
+        this.scene.scale(3, 3, 1);
+        
+        const gl = this.scene.gl;
+
+        this.scene.textureManager.helipadHTexture.bind(0);
+
+        this.scene.textureManager.helipadDownTexture.bind(1);
+
+        this.scene.textureManager.helipadUpTexture.bind(2);
+
+        let targetTextureInt = 0; 
+        if (this.helipadTargetTexture === 'DOWN') {
+            targetTextureInt = 1;
+        } else if (this.helipadTargetTexture === 'UP') {
+            targetTextureInt = 2;
+        }
+        this.helipadShader.setUniformsValues({
+            uHTexture: 0,        
+            uDownTexture: 1,     
+            uUpTexture: 2,       
+            uBlendFactor: Math.max(0, Math.min(1, this.helipadBlendFactor)), 
+            uTargetTexture: targetTextureInt 
+        });
+
+        this.scene.setActiveShader(this.helipadShader);
+        this.helipad.display();
+        this.scene.setActiveShader(this.scene.defaultShader);
+        
         this.scene.popMatrix();
 
         // Logo
