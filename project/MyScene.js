@@ -91,7 +91,7 @@ export class MyScene extends CGFscene {
       this.cameraZoom, // Field of View
       0.1, // Near Clipping Plane
       1000, // Far Clipping Plane
-      vec3.fromValues(10, 10, 10), // Camera Position
+      vec3.fromValues(0, 30, -120), // Camera Position
       vec3.fromValues(0, 10, 0) // Target Position
     );
   }
@@ -146,7 +146,8 @@ export class MyScene extends CGFscene {
       }
       
       this.building.updateHelipadState(heliState, delta);
-  
+      this.building.update(t);
+
       const timeFactor = t / 100 % 100;
       this.rightForest1.update(timeFactor);
       this.lake.update(timeFactor);
@@ -255,7 +256,7 @@ export class MyScene extends CGFscene {
 
     //heli
     this.pushMatrix();
-    this.translate(0,15,-80);
+    this.translate(4.4,16,-87);
     this.scale(.5, .5, .5);
     this.heli.display();
     this.popMatrix();
