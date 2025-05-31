@@ -2,6 +2,7 @@ import { CGFobject, CGFshader } from "../../lib/CGF.js";
 import { MyCube } from "../geometric/MyCube.js";
 import { MyWindow } from "./MyWindow.js";
 import { MyCircle } from "../geometric/MyCircle.js";
+import { MySphere } from "../geometric/MySphere.js";
 
 export class MyBuilding extends CGFobject {
     constructor(scene) {
@@ -75,10 +76,19 @@ export class MyBuilding extends CGFobject {
             this.helipadShader = new CGFshader(scene.gl, "shaders/helipad.vert", "shaders/helipad.frag");
         }
 
+        // Corner lights for helipad
+        this.cornerLight = new MySphere(scene, 16, 8,false);
+        this.lightState = 0;
+        this.timeFactor = 0;
+        
+        // Light shader
+        if (scene && scene.gl) {
+            this.lightShader = new CGFshader(scene.gl, "shaders/light.vert", "shaders/light.frag");
+        }
+
         // Logo
         this.logo = new MyCube(scene, .75, 4.5, 0);
     }
-
 
     updateHelipadState(heliState, deltaTime) {
         const transitionSpeed = 0.02;
@@ -96,20 +106,57 @@ export class MyBuilding extends CGFobject {
             if (heliState === 'landing') {
                 this.helipadTargetTexture = 'DOWN';
                 this.helipadBlendFactor = this.blinkIntensity;
+                this.lightState = 2; // Red lights for landing
             } else { // takeoff
                 this.helipadTargetTexture = 'UP';
                 this.helipadBlendFactor = this.blinkIntensity;
+                this.lightState = 1; // Green lights for takeoff
             }
         } else {
             this.helipadTargetTexture = 'H';
             this.helipadBlendFactor = Math.max(0.0, this.helipadBlendFactor - transitionSpeed);
             this.blinkTimer = 0;
+            this.lightState = 0; // Lights off
         }
+    }
+
+    update(timeFactor) {
+        this.timeFactor = timeFactor;
+    }
+
+    displayCornerLights() {
+        const lightPositions = [
+            [2.8, 0.3, 2.8],   // Front-right corner
+            [-2.8, 0.3, 2.8],  // Front-left corner  
+            [2.8, 0.3, -2.8],  // Back-right corner
+            [-2.8, 0.3, -2.8]  // Back-left corner
+        ];
+
+        if (this.lightShader) {
+            this.scene.setActiveShader(this.lightShader);
+            this.lightShader.setUniformsValues({
+                uBlendFactor: this.helipadBlendFactor, 
+                uLightState: this.lightState,
+                uAmbientLight: [this.scene.ambientlightFactor, this.scene.ambientlightFactor, this.scene.ambientlightFactor],
+                uLightDirection: [0.0, 1.0, 0.0]
+            });
+        }
+
+        lightPositions.forEach(([x, y, z]) => {
+            this.scene.pushMatrix();
+            this.scene.translate(4.5 + x, 12.3 + y, -0.5 + z);
+            this.scene.scale(0.3, 0.3, 0.3);
+            this.cornerLight.display();
+            this.scene.popMatrix();
+        });
+
+        this.scene.setActiveShader(this.scene.defaultShader);
     }
 
     display() {
         // Base: flat on XZ plane
         this.scene.pushMatrix();
+        this.scene.textureManager.concreteMaterial.apply();
         this.base.display();
         this.scene.popMatrix();
 
@@ -197,6 +244,9 @@ export class MyBuilding extends CGFobject {
         
         this.scene.popMatrix();
 
+        // Corner lights (display after helipad)
+        this.displayCornerLights();
+
         // Logo
         this.scene.pushMatrix();
         this.scene.textureManager.logoMaterial.apply();
@@ -204,8 +254,6 @@ export class MyBuilding extends CGFobject {
         this.logo.display();  // Render the logo
         this.scene.popMatrix();
     }
-
-
 
     displayColumns() {
         // Column positions and display logic
@@ -413,7 +461,6 @@ export class MyBuilding extends CGFobject {
         this.scene.popMatrix();
     }
 
-
     displayGarage() {
         this.scene.pushMatrix();
         this.scene.textureManager.sandstoneBrickWallMaterial.apply();
@@ -505,4 +552,3 @@ export class MyBuilding extends CGFobject {
         });
     }
 }
-
