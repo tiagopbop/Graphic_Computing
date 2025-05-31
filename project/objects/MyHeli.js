@@ -16,17 +16,16 @@ export class MyHeli extends CGFobject {
 
         this.scene = scene;
 
-        this.helixRotationAngle = 0;
-
+        // <editor-fold desc="Helicopter Parts Constructor">
         // Wings
-        this.trapezoid = new MyTrapezoid(scene, 1, 0.5, 1,.25);
+        this.trapezoid = new MyTrapezoid(scene, 1, 0.5, 1, .25);
         this.trapezoidBase = new MyCube(scene, .5, 1, .25);
         this.wingSupport = new MyCube(scene, .25, .5, 2.5);
 
         // Helix
         this.helixSupport = new MyCylinder(scene, 64, 64);
         this.helixSupportBase = new MyCylinder(scene, 64, 64);
-        this.blade = new MyTrapezoid(scene, 5, 4.5, .5,.25);
+        this.blade = new MyTrapezoid(scene, 5, 4.5, .5, .25);
         this.bladeSupport = new MyCube(scene, .25, .5, .25);
 
         // Tail Flap
@@ -41,7 +40,7 @@ export class MyHeli extends CGFobject {
 
         // Tail
         this.tailBase = new MyTrapezoid(scene, 1.5, 1, 8, 1.5);
-        this.tailTop = new MyTriangle(scene,.5,5.5,1.5);
+        this.tailTop = new MyTriangle(scene, .5, 5.5, 1.5);
 
         // Body
         this.bodyTailConnect = new MyTriangle(scene, 1.5, 2, 1.5);
@@ -57,8 +56,8 @@ export class MyHeli extends CGFobject {
 
         // this.backPartUp = new MyTriangle(scene, .85, 2, 3);
         // this.backPartUp = new MyTrapezoid(scene, 3, 2.15, 3, 3.5);
-        this.backPartUp2 = new MyTrapezoid(scene, 3,2.15,3,3)
-        this.backPartDown = new MyTrapezoid(scene, 3,2.15,3,1.5)
+        this.backPartUp2 = new MyTrapezoid(scene, 3, 2.15, 3, 3)
+        this.backPartDown = new MyTrapezoid(scene, 3, 2.15, 3, 1.5)
 
 
         this.windshield = new MyTrapezoid(scene, 2.3, .8, 2.8, 4.3);
@@ -68,10 +67,12 @@ export class MyHeli extends CGFobject {
         this.bucketString = new MyCube(scene, 5, .3, .3);
         this.bucket = new MyCylinder(scene, 64, 64);
 
+        // </editor-fold>
+
         // Motion state
-        this.position = { x: 0, y: 0, z: 0 };
-        this.velocity = { x: 0, z: 0 };
-        this.acceleration = { x: 0, z: 0 };
+        this.position = {x: 0, y: 0, z: 0};
+        this.velocity = {x: 0, z: 0};
+        this.acceleration = {x: 0, z: 0};
         this.orientation = 0;
 
         // Vertical control
@@ -83,42 +84,273 @@ export class MyHeli extends CGFobject {
         this.maxSpeed = 10;
         this.drag = 0.92;
 
+        // Lean angle
+        this.leanAngle = 0;
+        this.turnLeanAngle = 0;
+
+        // Helix Rotation
+        this.helixRotationSpeed = 0;
+        this.helixRotationAngle = 0;
+        this.bladeSpeedThreshold = 10; // Speed threshold to start flying
+        this.revvingUp = false; // Whether the helicopter blades are revving up
+
+
+        // Bucket Logic
+        this.bucketState = 'empty';
+        this.bucketPosition = {x: 0, y: -5, z: 0}; // Relative position of the bucket
+        this.bucketHasWater = false; // Whether the bucket has water or not
+
         this.initBuffers();
     }
 
-    // update(deltaTime) {
-    //     this.helixRotationAngle += deltaTime * 0.005;
-    // }
-
     display() {
         this.scene.pushMatrix();
-        this.scene.translate(this.position.x, this.position.y, this.position.z);
-        this.scene.rotate(this.orientation, 0, 1, 0);
+        // this.scene.translate(this.position.x, this.position.y, this.position.z);
+        // this.scene.rotate(this.orientation, 0, 1, 0);
 
-        this.scene.scale(1, 1, 1);
+
+        this.scene.rotate(this.leanAngle, 1, 0, 0);
+        this.scene.rotate(this.turnLeanAngle, 0, 0, 1);
+
+        // this.scene.scale(1, 1, 1);
         // this.scene.defaultAppearance?.apply();
 
         // super.display();
-        this.scene.rotate(-Math.PI/2,0,1,0);
+        // this.scene.rotate(-Math.PI/2,0,1,0);
+
         this.displayHeli();
         this.scene.popMatrix();
     }
 
+    // Helicopter Control Methods (functions)
+    takeOff() {
+        if(!this.in_air && this.helixRotationSpeed < this.bladeSpeedThreshold) {
+            this.revvingUp = true; // Start revving up the blades
+        }
+        // } else if (!this.in_air && this.helixRotationSpeed >= this.bladeSpeedThreshold) {
+        //     this.in_air = true;
+        //     this.targetY = this.cruiseAltitude;
+        //     this.revvingUp = false; // Stop revving up the blades
+        // }
+    }
+
+    land() {
+        if (this.in_air) {
+            if (this.isOverLake()) {
+                this.bucketState = 'descending'; // Start filling the bucket
+                this.targetY = this.position.y - 5; // Lower the helicopter to fill the bucket
+            } else {
+                this.in_air = false;
+                this.targetY = 0;
+                this.velocity = {x: 0, z: 0};
+            }
+        }
+    }
+
+    isTakingOff() {
+        return this.targetY === this.cruiseAltitude && this.position.y != this.cruiseAltitude;
+    }
+
+    isLanding() {
+        return this.targetY === 0 && this.position.y != 0;
+    }
+
+    // <editor-fold desc="Bucket Logic Methods">
+    isOverLake() {
+        const lakeBounds = {xMin: -70, xMax: -50, zMin: -20, zMax: 0};
+        return (
+            this.position.x >= lakeBounds.xMin &&
+            this.position.x <= lakeBounds.xMax &&
+            this.position.z >= lakeBounds.zMin &&
+            this.position.z <= lakeBounds.zMax
+        );
+    }
+
+    isOverFire() {
+        const fireBounds = {xMin: 220, xMax: 240, zMin: -60, zMax: -40};
+        return (
+            this.position.x >= fireBounds.xMin &&
+            this.position.x <= fireBounds.xMax &&
+            this.position.z >= fireBounds.zMin &&
+            this.position.z <= fireBounds.zMax
+        );
+    }
+
+    pickUpWater() {
+        if (this.bucketState === 'descending' && this.position.y <= this.targetY) {
+            this.bucketState = 'filled'; // Bucket is now full
+            this.bucketHasWater = true; // Indicate that the bucket has water
+            this.targetY = this.cruiseAltitude; // Return to cruise altitude
+        }
+    }
+
+    dropWater() {
+        if (this.bucketState === 'filled' && this.isOverFire()) {
+            this.bucketState = 'open'; // Bucket is now empty
+            this.bucketHasWater = false; // Indicate that the bucket is empty
+            // Missing Logic to extinguish the fire
+        }
+    }
+
+    // </editor-fold>
+
+    reset() {
+        this.position = {x: 0, y: 0, z: 0};
+        this.velocity = {x: 0, z: 0};
+        this.orientation = 0;
+        this.in_air = false;
+        this.targetY = 0;
+    }
+
+    accelerate(v) {
+        if (!this.in_air) return;
+
+        const dirX = Math.sin(this.orientation);
+        const dirZ = Math.cos(this.orientation);
+        this.acceleration.x += v * dirX;
+        this.acceleration.z += v * dirZ;
+
+        // Leaning effect
+        const maxLeanAngle = Math.PI / 36;
+        const leanAdjustment = v * 0.005; // Adjust the lean based on acceleration
+        this.leanAngle = Math.max(-maxLeanAngle, Math.min(maxLeanAngle, this.leanAngle + leanAdjustment));
+    }
+
+    turn(v) {
+        if (!this.in_air) return;
+
+        this.orientation -= v;
+
+        const speed = Math.hypot(this.velocity.x, this.velocity.z);
+        this.velocity.x = speed * Math.sin(this.orientation);
+        this.velocity.z = speed * Math.cos(this.orientation);
+
+        // Leaning effect on turn
+        const maxTurnLeanAngle = Math.PI / 36;
+        const forwardLean = -0.005;
+
+        if (v > 0){
+            this.turnLeanAngle = Math.max(-maxTurnLeanAngle, Math.min(maxTurnLeanAngle, this.turnLeanAngle + v * 0.2 + forwardLean));
+        } else {
+            this.turnLeanAngle = Math.max(-maxTurnLeanAngle, Math.min(maxTurnLeanAngle, this.turnLeanAngle - v * 0.2 + forwardLean));
+        }
+    }
+
+    update(deltaTime, speedFactor = 1.0) {
+        const delta = deltaTime / 1000;
+
+        if (this.revvingUp){
+            this.helixRotationSpeed = Math.min(this.bladeSpeedThreshold, this.helixRotationSpeed + 1 * delta);
+
+            if(this.helixRotationSpeed >= this.bladeSpeedThreshold){
+                this.in_air = true;
+                this.targetY = this.cruiseAltitude;
+                this.revvingUp = false;
+            }
+        }
+
+        if (this.in_air) {
+            this.velocity.x += this.acceleration.x * delta * speedFactor;
+            this.velocity.z += this.acceleration.z * delta * speedFactor;
+
+            this.velocity.x *= this.drag;
+            this.velocity.z *= this.drag;
+
+            const speed = Math.hypot(this.velocity.x, this.velocity.z);
+            if (speed > this.maxSpeed) {
+                const scale = this.maxSpeed / speed;
+                this.velocity.x *= scale;
+                this.velocity.z *= scale;
+            }
+
+            this.position.x += this.velocity.x * delta;
+            this.position.z += this.velocity.z * delta;
+
+
+        } else if (this.isLanding()){
+            this.helixRotationSpeed = Math.max(0, this.helixRotationSpeed - 0.5 * delta); // Dampen rotation speed when not in air
+        } else if (!this.revvingUp){
+            this.helixRotationSpeed = 0;
+        }
+
+        // this.acceleration = {x: 0, z: 0};
+
+        const dy = this.targetY - this.position.y;
+        if (Math.abs(dy) > 0.01) {
+            const dir = Math.sign(dy);
+            const step = this.verticalSpeed * delta;
+            this.position.y += dir * Math.min(Math.abs(dy), step);
+        } else {
+            this.position.y = this.targetY;
+
+            // Handle Bucket State
+            if (this.bucketState === 'descending' && this.position.y <= this.targetY) {
+                this.pickUpWater(); // Pick up water if descending
+            }
+        }
+
+
+        // const maxLeanAngle = Math.PI / 36;
+        //
+        // if (this.acceleration.x !== 0 || this.acceleration.z !== 0) {
+        //     const forwardLean = -this.acceleration.z * 0.0015; // Lean forward based on acceleration
+        //     const backwardLean = this.acceleration.z * 0.002; // Lean backward based on acceleration
+        //     this.leanAngle = Math.max(-maxLeanAngle, Math.min(maxLeanAngle, forwardLean + backwardLean));
+        // } else {
+        //     this.leanAngle = Math.PI / 72; // Dampen the lean angle when not accelerating
+        // }
+        //
+        // const maxTurnLeanAngle = Math.PI / 18;
+        // if (this.acceleration.x === 0) {
+        //     this.turnLeanAngle *= 0.9; // Dampen the turn lean angle when not turning
+        // } else {
+        //     const forwardLean = -Math.abs(this.acceleration.x) * 0.01; // Lean forward based on acceleration
+        //     if(this.acceleration.x > 0){
+        //         const leftLean = this.acceleration.x * 0.5;
+        //         this.turnLeanAngle = Math.max(-maxTurnLeanAngle, Math.min(maxTurnLeanAngle, leftLean + forwardLean));
+        //     }else{
+        //         const rightLean = -this.acceleration.x * 0.5;
+        //         this.turnLeanAngle = Math.max(-maxTurnLeanAngle, Math.min(maxTurnLeanAngle, leftLean + rightLean));
+        //     }
+        // }
+
+
+        this.acceleration = {x: 0, z: 0};
+        this.helixRotationAngle += this.helixRotationSpeed * delta;
+    }
+
+
+    // Helicopter Display Methods (functions)
+
     displayHeli(){
+        this.scene.pushMatrix();
+        this.scene.translate(this.position.x, this.position.y, this.position.z);
+        this.scene.rotate(this.orientation, 0, 1, 0);
+
+        this.scene.scale(1,1,1);
+        this.scene.rotate(-Math.PI/2, 0, 1, 0); // Rotate to align with the scene's coordinate system
+
+        // Display the helicopter parts
+        this.heliConstruct();
+
+        this.scene.popMatrix();
+    }
+
+    heliConstruct() {
         // Display The Top Helix
         this.scene.pushMatrix();
-        this.scene.translate(9.5,2,.25);
+        this.scene.translate(9.5, 2, .25);
         this.scene.scale(.75, .75, .75);
         this.displayHelix(.65);
         this.scene.popMatrix();
 
         // Display The Bottom Support
         this.scene.pushMatrix();
-        this.scene.translate(12, -6.65,2.4);
+        this.scene.translate(12, -6.65, 2.4);
         this.scene.scale(.75, .75, .75);
-        this.scene.rotate(Math.PI/2, 0, 1, 0);
+        this.scene.rotate(Math.PI / 2, 0, 1, 0);
         this.displayBottomSupport(1);
-        this.scene.translate(5.75,0,0);
+        this.scene.translate(5.75, 0, 0);
         this.displayBottomSupport(-1);
         this.scene.popMatrix();
 
@@ -134,10 +366,10 @@ export class MyHeli extends CGFobject {
         // Display The Wings
         this.scene.pushMatrix();
         this.scene.translate(4.5, .5, 3);
-        this.scene.rotate(-Math.PI/2, 0, 0, 0);
+        this.scene.rotate(-Math.PI / 2, 0, 0, 0);
         this.displayWings(-1);
         this.scene.translate(0, 0, -5.5);
-        this.scene.rotate(Math.PI/2, 0, 0, 0);
+        this.scene.rotate(Math.PI / 2, 0, 0, 0);
         this.displayWings(1);
         this.scene.popMatrix();
 
@@ -146,6 +378,7 @@ export class MyHeli extends CGFobject {
 
     }
 
+    // <editor-fold desc="Helicopter Parts Display Methods">
     displayHelix(bladeScaleFactor = 1){
         // Support
         this.scene.pushMatrix();
@@ -178,6 +411,7 @@ export class MyHeli extends CGFobject {
         // Blades
         this.scene.pushMatrix();
         this.scene.translate(-1.25, 2, 0);
+        this.scene.rotate(this.helixRotationAngle, 0, 1, 0);
         this.scene.rotate(-Math.PI/2, 1, 0, 0);
         this.scene.scale(bladeScaleFactor * 4, 2, 1);
         this.scene.textureManager.metalMaterialOG.apply();
@@ -186,6 +420,7 @@ export class MyHeli extends CGFobject {
 
         this.scene.pushMatrix();
         this.scene.translate(0, 2, 1.25);
+        this.scene.rotate(this.helixRotationAngle, 0, 1, 0);
         this.scene.rotate(-Math.PI/2, 1, 0, 0);
         this.scene.rotate(Math.PI/2, 0, 0, 1);
         this.scene.scale(bladeScaleFactor * 4, 2, 1);
@@ -195,6 +430,7 @@ export class MyHeli extends CGFobject {
 
         this.scene.pushMatrix();
         this.scene.translate(1.25, 2, 0);
+        this.scene.rotate(this.helixRotationAngle, 0, 1, 0);
         this.scene.rotate(-Math.PI/2, 1, 0, 0);
         this.scene.rotate(Math.PI, 0, 0, 1);
         this.scene.scale(bladeScaleFactor * 4, 2, 1);
@@ -204,6 +440,7 @@ export class MyHeli extends CGFobject {
 
         this.scene.pushMatrix();
         this.scene.translate(0, 2, -1.25);
+        this.scene.rotate(this.helixRotationAngle, 0, 1, 0);
         this.scene.rotate(-Math.PI/2, 1, 0, 0);
         this.scene.rotate(-Math.PI/2, 0, 0, 1);
         this.scene.scale(bladeScaleFactor * 4, 2, 1);
@@ -421,6 +658,7 @@ export class MyHeli extends CGFobject {
         this.scene.translate(0,0,-.5)
         this.scene.rotate(-Math.PI/2, 1, 0, 0);
         this.scene.scale(.25, .25, .25);
+        this.scene.rotate(this.helixRotationAngle, 0, 1, 0);
         this.displayHelix(.35);
         this.scene.popMatrix();
     }
@@ -465,118 +703,56 @@ export class MyHeli extends CGFobject {
 
     }
 
-    displayBucket(){
-        // Bucket
+    // displayBucket(){
+    //     // Bucket
+    //     this.scene.pushMatrix();
+    //     this.scene.translate(0, -1.5, 0);
+    //     this.scene.rotate(Math.PI/2, 1, 0, 0);
+    //     this.scene.scale(2, 2, 3);
+    //     this.scene.textureManager.metalMaterial2.apply();
+    //     this.bucket.display();
+    //     this.scene.popMatrix();
+    //
+    //
+    //     // Inner Bucket (Hollow Effect)
+    //     this.scene.pushMatrix();
+    //     this.scene.translate(0, -1.5, 0);
+    //     this.scene.rotate(Math.PI / 2, 1, 0, 0);
+    //     this.scene.scale(1.8, 1.8, 2.8); // Slightly smaller to create the hollow effect
+    //     this.scene.textureManager.metalMaterialOG2.apply(); // Use a darker or contrasting material
+    //     this.bucket.display();
+    //     this.scene.popMatrix();
+    //
+    //
+    //     // Bucket Support
+    //     this.scene.pushMatrix();
+    //     this.scene.textureManager.metalMaterialOG.apply();
+    //     this.bucketString.display();
+    //     this.scene.popMatrix();
+    // }
+
+    displayBucket() {
         this.scene.pushMatrix();
-        this.scene.translate(0, -1.5, 0);
-        this.scene.rotate(Math.PI/2, 1, 0, 0);
-        this.scene.scale(2, 2, 3);
+        this.scene.translate(this.bucketPosition.x, this.bucketPosition.y, this.bucketPosition.z);
+
+        if (this.bucketState === 'open') {
+            this.scene.scale(1, 1, 0.5); // Simulate the bucket opening
+        }
+
         this.scene.textureManager.metalMaterial2.apply();
         this.bucket.display();
         this.scene.popMatrix();
 
-
-        // Inner Bucket (Hollow Effect)
-        this.scene.pushMatrix();
-        this.scene.translate(0, -1.5, 0);
-        this.scene.rotate(Math.PI / 2, 1, 0, 0);
-        this.scene.scale(1.8, 1.8, 2.8); // Slightly smaller to create the hollow effect
-        this.scene.textureManager.metalMaterialOG2.apply(); // Use a darker or contrasting material
-        this.bucket.display();
-        this.scene.popMatrix();
-
-
-        // Bucket Support
-        this.scene.pushMatrix();
-        this.scene.textureManager.metalMaterialOG.apply();
-        this.bucketString.display();
-        this.scene.popMatrix();
-    }
-
-
-
-    takeOff() {
-        if (!this.in_air) {
-            this.in_air = true;
-            this.targetY = this.cruiseAltitude;
+        if (this.bucketHasWater) {
+            // Display water inside the bucket
+            this.scene.pushMatrix();
+            this.scene.translate(this.bucketPosition.x, this.bucketPosition.y - 0.5, this.bucketPosition.z);
+            this.scene.scale(0.8, 0.8, 0.8);
+            this.scene.textureManager.waterMaterial.apply();
+            this.bucket.display();
+            this.scene.popMatrix();
         }
     }
 
-    land() {
-        if (this.in_air) {
-            this.in_air = false;
-            this.targetY = 0;
-            this.velocity = { x: 0, z: 0 };
-        }
-    }
-
-    isTakingOff() {
-        return this.targetY === this.cruiseAltitude && this.position.y != this.cruiseAltitude;
-    }
-    
-    isLanding() {
-        return this.targetY === 0 && this.position.y != 0;
-}
-
-
-
-    reset() {
-        this.position = { x: 0, y: 0, z: 0 };
-        this.velocity = { x: 0, z: 0 };
-        this.orientation = 0;
-        this.in_air = false;
-        this.targetY = 0;
-    }
-
-    accelerate(v) {
-        if (!this.in_air) return;
-
-        const dirX = Math.sin(this.orientation);
-        const dirZ = Math.cos(this.orientation);
-        this.acceleration.x += v * dirX;
-        this.acceleration.z += v * dirZ;
-    }
-
-    turn(v) {
-        if (!this.in_air) return;
-
-        this.orientation += v;
-
-        const speed = Math.hypot(this.velocity.x, this.velocity.z);
-        this.velocity.x = speed * Math.sin(this.orientation);
-        this.velocity.z = speed * Math.cos(this.orientation);
-    }
-
-    update(deltaTime, speedFactor = 1.0) {
-        const delta = deltaTime / 1000;
-
-        if (this.in_air) {
-            this.velocity.x += this.acceleration.x * delta * speedFactor;
-            this.velocity.z += this.acceleration.z * delta * speedFactor;
-
-            this.velocity.x *= this.drag;
-            this.velocity.z *= this.drag;
-
-            const speed = Math.hypot(this.velocity.x, this.velocity.z);
-            if (speed > this.maxSpeed) {
-                const scale = this.maxSpeed / speed;
-                this.velocity.x *= scale;
-                this.velocity.z *= scale;
-            }
-
-            this.position.x += this.velocity.x * delta;
-            this.position.z += this.velocity.z * delta;
-        }
-
-        this.acceleration = { x: 0, z: 0 };
-
-        const dy = this.targetY - this.position.y;
-        if (Math.abs(dy) > 0.01) {
-            const dir = Math.sign(dy);
-            const step = this.verticalSpeed * delta;
-            this.position.y += dir * Math.min(Math.abs(dy), step);
-        } else {
-            this.position.y = this.targetY;
-        }
-    }
+    // </editor-fold>
 }

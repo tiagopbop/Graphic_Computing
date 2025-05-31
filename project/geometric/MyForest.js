@@ -58,12 +58,23 @@ export class MyForest extends CGFobject {
         }
     }
 
+    extinguish() {
+        if (this.forestFire) {
+            this.forestFire = null;
+        }
+        for(const tree of this.trees) {
+            tree.on_fire = false;
+        }
+
+        console.log("Extinguishing the forest fire.");
+    }
+
     display() {
         for (const { x, z, scale, tree, on_fire } of this.trees) {
             this.scene.pushMatrix();
             this.scene.translate(x, 0, z);
             this.scene.scale(scale, scale, scale);
-            tree.display(false);
+            tree.display(on_fire);
             this.scene.popMatrix();
         }
 

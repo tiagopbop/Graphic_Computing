@@ -128,7 +128,21 @@ export class MyScene extends CGFscene {
 
     if (this.gui.isKeyPressed("KeyR")) 
       this.heli.reset();
+
+    if (this.gui.isKeyPressed("KeyO")) {
+      this.heli.dropWater();
+      this.extinguishFire();
     }
+  }
+
+    extinguishFire() {
+      if(this.heli.isOverFire() && this.heli.bucketState === 'open'){
+        console.log("Extinguishing fire");
+        this.rightForest1.extinguish();
+        this.rightForest2.extinguish();
+      }
+    }
+
 
     update(t) {
       const now = performance.now();
@@ -255,7 +269,7 @@ export class MyScene extends CGFscene {
 
     //heli
     this.pushMatrix();
-    this.translate(0,15,-80);
+    this.translate(4.5,16.2,-84.5);
     this.scale(.5, .5, .5);
     this.heli.display();
     this.popMatrix();
