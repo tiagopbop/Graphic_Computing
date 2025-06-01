@@ -1,12 +1,12 @@
-import {CGFobject} from '../../lib/CGF.js';
+import {CGFobject} from "../../lib/CGF.js";
 
 /**
-* MyPyramid
-* @constructor
-* @param scene - Reference to MyScene object
-* @param slices - number of divisions around the Y axis
-* @param stacks - number of divisions along the Y axis (unused here)
-*/
+ * MyPyramid class represents a 3D pyramid shape.
+ * @constructor
+ * @param {MyScene} scene - Reference to MyScene object
+ * @param {number} slices - Number of divisions around the Y axis
+ * @param {number} stacks - Number of divisions along the Y axis
+ */
 export class MyPyramid extends CGFobject {
     constructor(scene, slices, stacks) {
         super(scene);
@@ -15,6 +15,9 @@ export class MyPyramid extends CGFobject {
         this.initBuffers();
     }
 
+    /**
+     * Initializes the pyramid's vertices, indices, normals, and texture coordinates.
+     */
     initBuffers() {
         this.vertices = [];
         this.indices = [];
@@ -22,7 +25,7 @@ export class MyPyramid extends CGFobject {
         this.texCoords = []; // Add texCoords
 
         var ang = 0;
-        var alphaAng = 2 * Math.PI / this.slices;
+        var alphaAng = (2 * Math.PI) / this.slices;
 
         // Sides of the pyramid
         for (var i = 0; i < this.slices; i++) {
@@ -32,24 +35,20 @@ export class MyPyramid extends CGFobject {
             var caa = Math.cos(ang + alphaAng);
 
             // Vertices for each face (tip + two base points)
-            this.vertices.push(0, 1, 0);            // Tip
-            this.vertices.push(ca, 0, -sa);         // Base current
-            this.vertices.push(caa, 0, -saa);       // Base next
+            this.vertices.push(0, 1, 0); // Tip
+            this.vertices.push(ca, 0, -sa); // Base current
+            this.vertices.push(caa, 0, -saa); // Base next
 
             // Normals (face normals)
-            var normal = [
-                saa - sa,
-                ca * saa - sa * caa,
-                caa - ca
-            ];
+            var normal = [saa - sa, ca * saa - sa * caa, caa - ca];
             var nsize = Math.sqrt(normal[0] ** 2 + normal[1] ** 2 + normal[2] ** 2);
-            normal = normal.map(n => n / nsize);
+            normal = normal.map((n) => n / nsize);
             this.normals.push(...normal, ...normal, ...normal);
 
             // Texture Coordinates for sides (simple mapping)
-            this.texCoords.push(0.5, 0);   // Tip
-            this.texCoords.push(0, 1);     // Base left
-            this.texCoords.push(1, 1);     // Base right
+            this.texCoords.push(0.5, 0); // Tip
+            this.texCoords.push(0, 1); // Base left
+            this.texCoords.push(1, 1); // Base right
 
             // Indices for sides
             this.indices.push(3 * i, 3 * i + 1, 3 * i + 2);
@@ -59,19 +58,18 @@ export class MyPyramid extends CGFobject {
 
         // Base center vertex
         let baseCenterIndex = this.vertices.length / 3;
-        this.vertices.push(0, 0, 0);               // Center of base
+        this.vertices.push(0, 0, 0); // Center of base
         this.normals.push(0, -1, 0);
-        this.texCoords.push(0.5, 0.5);             // Center texCoord
+        this.texCoords.push(0.5, 0.5); // Center texCoord
 
         // Indices for base cap (reuse side vertices)
         for (var i = 0; i < this.slices; i++) {
             this.indices.push(
                 baseCenterIndex,
-                3 * i + 2,      // Next rim vertex from sides
-                3 * i + 1       // Current rim vertex from sides
+                3 * i + 2, // Next rim vertex from sides
+                3 * i + 1 // Current rim vertex from sides
             );
         }
-
 
         // Base rim vertices
         ang = 0;
@@ -79,17 +77,19 @@ export class MyPyramid extends CGFobject {
             var ca = Math.cos(ang);
             var sa = Math.sin(ang);
             this.vertices.push(ca, 0, -sa);
-            this.normals.push(0, -1, 0);           // Downward normals
+            this.normals.push(0, -1, 0); // Downward normals
             this.texCoords.push(0.5 + 0.5 * ca, 0.5 - 0.5 * sa); // Circular mapping
             ang += alphaAng;
         }
-
-  
 
         this.primitiveType = this.scene.gl.TRIANGLES;
         this.initGLBuffers();
     }
 
+    /**
+     * Updates the pyramid's buffers based on the given complexity.
+     * @param {number} complexity - A value between 0 and 1 representing the complexity level.
+     */
     updateBuffers(complexity) {
         this.slices = 3 + Math.round(9 * complexity); // Complexity varies 0-1, so slices vary 3-12
 
