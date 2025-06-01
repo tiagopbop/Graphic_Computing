@@ -1,4 +1,5 @@
-import {CGFobject} from '../lib/CGF.js';
+import {CGFobject} from "../../lib/CGF.js";
+
 /**
  * MyWindow
  * @constructor
@@ -10,23 +11,35 @@ export class MyWindow extends CGFobject {
         this.initBuffers();
     }
 
+    /**
+     * Initializes the WebGL buffers for the window
+     * Sets up the window vertices, indices, and texture coordinates
+     */
     initBuffers() {
-        // this.vertices = [
-        //     -1, 0, 0,	//0
-        //     0, -1, 0,	//1
-        //     0, 1, 0,	//2
-        //     1, 0, 0		//3
-        // ];
-        //
-        // //Counter-clockwise reference of vertices
-        // this.indices = [
-        //     0, 1, 2,
-        //     1, 3, 2
-        // ];
+        // Define vertices, indices, and other buffer data for the window
+        this.vertices = [
+            -1, -1, 0, // Bottom-left
+            1, -1, 0, // Bottom-right
+            -1, 1, 0, // Top-left
+            1, 1, 0, // Top-right
+        ];
+
+        this.indices = [0, 1, 2, 1, 3, 2];
+
+        this.texCoords = [0, 1, 1, 1, 0, 0, 1, 0];
 
         this.primitiveType = this.scene.gl.TRIANGLES;
-
         this.initGLBuffers();
     }
-}
 
+    /**
+     * Displays the window
+     */
+    display() {
+        // Apply the window texture
+        this.scene.textureManager.windowMaterial.apply();
+
+        // Render the window
+        super.display();
+    }
+}
