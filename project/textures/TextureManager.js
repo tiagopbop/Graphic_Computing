@@ -71,7 +71,7 @@ export class TextureManager {
         );
         this.paintedRedMetalTexture = new CGFtexture(
             this.scene,
-            "./textures/plain/metal/painted_red_metal.jpg"
+            "./textures/plain/metal/painted_metal_red.jpg"
         );
 
         this.bucketTexture = new CGFtexture(
