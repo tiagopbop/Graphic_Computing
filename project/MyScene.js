@@ -110,9 +110,9 @@ export class MyScene extends CGFscene {
      */
     resetCamera() {
         console.log("Resetting camera");
-        this.camera.setPosition(vec3.fromValues(200, 200, 200));
-        this.camera.setTarget(vec3.fromValues(0, 0, 0));
-        this.cameraZoom = 0.4;
+        this.camera.setPosition(vec3.fromValues(0, 30, -120));
+        this.camera.setTarget(vec3.fromValues(0, 10, 0));
+        this.cameraZoom = 1;
         this.updateProjectionMatrix();
     }
 

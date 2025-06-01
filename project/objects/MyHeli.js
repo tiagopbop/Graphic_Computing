@@ -281,7 +281,7 @@ export class MyHeli extends CGFobject {
      */
     isOverLake() {
         const lakeCenter = {x: -130, z: 160};
-        const lakeRadius = 100;
+        const lakeRadius = 70;
 
         const distance = Math.hypot(
             this.position.x - lakeCenter.x,
@@ -838,7 +838,7 @@ export class MyHeli extends CGFobject {
 
     displayHelix(bladeScaleFactor = 1) {
         // Support
-        this.scene.textureManager.brushedMetalMaterial.apply();
+        this.scene.textureManager.polishedAluminumMaterial.apply();
 
         this.scene.pushMatrix();
         this.scene.translate(0, .5, 0);
@@ -913,7 +913,7 @@ export class MyHeli extends CGFobject {
         // Left Support is either 1 or -1 that indicates the position of the support
         // Main Support
         this.scene.pushMatrix();
-        this.scene.textureManager.brushedMetalMaterial.apply();
+        this.scene.textureManager.polishedAluminumMaterial.apply();
         this.bottomSupport.display();
         this.scene.translate(0, .28, 4.2);
         this.scene.rotate(-Math.PI / 4, 1, 0, 0);
@@ -934,7 +934,7 @@ export class MyHeli extends CGFobject {
         this.bottomConnector.display();
         this.scene.translate(leftSupport * .1, .75, 0);
         this.scene.rotate(leftSupport * -Math.PI / 5.5, 0, 0, 1);
-        this.scene.textureManager.brushedMetalMaterial.apply();
+        this.scene.textureManager.polishedAluminumMaterial.apply();
         this.bottomConnector2.display();
         this.scene.popMatrix();
     }

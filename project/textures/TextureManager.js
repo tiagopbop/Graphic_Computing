@@ -60,25 +60,18 @@ export class TextureManager {
             "./textures/objects/logo.jpg"
         );
 
-        this.brushedMetalTexture = new CGFtexture(
-            this.scene,
-            "./textures/plain/metal/brushed_metal.png"
-        );
         this.polishedAluminumTexture = new CGFtexture(
             this.scene,
-            "./textures/plain/metal/polished_aluminum.png"
+            "./textures/plain/metal/polished_aluminum.jpg"
         );
-        this.chromeTexture = new CGFtexture(
-            this.scene,
-            "./textures/plain/metal/chrome.png"
-        );
+
         this.brushedGoldTexture = new CGFtexture(
             this.scene,
-            "./textures/plain/metal/brushed_gold.png"
+            "./textures/plain/metal/brushed_gold.jpg"
         );
         this.paintedRedMetalTexture = new CGFtexture(
             this.scene,
-            "./textures/plain/metal/painted_red_metal.png"
+            "./textures/plain/metal/painted_red_metal.jpg"
         );
 
         this.bucketTexture = new CGFtexture(
@@ -170,24 +163,11 @@ export class TextureManager {
 
         this.roadMaterial = this.createRoadMaterial(this.roadTexture);
 
-
-        this.brushedMetalMaterial = this.createMaterial(this.brushedMetalTexture);
-        this.brushedMetalMaterial.setAmbient(0.5, 0.5, 0.5, 1);
-        this.brushedMetalMaterial.setDiffuse(0.6, 0.6, 0.6, 1);
-        this.brushedMetalMaterial.setSpecular(1.0, 1.0, 1.0, 1);
-        this.brushedMetalMaterial.setShininess(150.0);
-
         this.polishedAluminumMaterial = this.createMaterial(this.polishedAluminumTexture);
         this.polishedAluminumMaterial.setAmbient(0.7, 0.7, 0.7, 1);
         this.polishedAluminumMaterial.setDiffuse(0.8, 0.8, 0.8, 1);
         this.polishedAluminumMaterial.setSpecular(1.0, 1.0, 1.0, 1);
         this.polishedAluminumMaterial.setShininess(180.0);
-
-        this.chromeMaterial = this.createMaterial(this.chromeTexture);
-        this.chromeMaterial.setAmbient(0.8, 0.8, 0.8, 1);
-        this.chromeMaterial.setDiffuse(0.9, 0.9, 0.9, 1);
-        this.chromeMaterial.setSpecular(1.0, 1.0, 1.0, 1);
-        this.chromeMaterial.setShininess(200.0);
 
         this.brushedGoldMaterial = this.createMaterial(this.brushedGoldTexture);
         this.brushedGoldMaterial.setAmbient(0.7, 0.7, 0.3, 1);
