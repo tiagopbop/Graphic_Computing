@@ -21,7 +21,7 @@ export class TextureManager {
         this.metalTexture = new CGFtexture(this.scene, './textures/plain/Metal046A.jpg');
         this.metalTexture2 = new CGFtexture(this.scene, './textures/plain/Metal046B.jpg');
         this.metalTextureOG = new CGFtexture(this.scene, './textures/plain/Metal046A.jpg');
-
+        this.bucketTexture= new CGFtexture(this.scene, './textures/plain/metal.jpg');
         this.earthTexture = new CGFtexture(this.scene, './textures/plain/earth.png');
         this.trunkTexture = new CGFtexture(this.scene, './textures/plain/trunk.jpg');
         this.leavesTexture = new CGFtexture(this.scene, './textures/plain/leavesbw.jpg');
@@ -47,7 +47,7 @@ export class TextureManager {
         this.helipadHMaterial = this.createMaterial(this.helipadHTexture);
         this.helipadDownMaterial = this.createMaterial(this.helipadDownTexture);
         this.helipadUpMaterial = this.createMaterial(this.helipadUpTexture);
-
+        this.bucketMaterial = this.createMaterial(this.bucketTexture);
         this.garageMaterial = this.createMaterial(this.garageTexture);
         this.logoMaterial = this.createMaterial(this.logoTexture);
 

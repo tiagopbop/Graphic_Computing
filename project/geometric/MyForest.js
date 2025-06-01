@@ -60,13 +60,12 @@ export class MyForest extends CGFobject {
 
     extinguish() {
         if (this.forestFire) {
-            this.forestFire = null;
+            this.forestFire.extinguish(); 
+            this.forestFire = null; 
         }
         for(const tree of this.trees) {
             tree.on_fire = false;
         }
-
-        console.log("Extinguishing the forest fire.");
     }
 
     display() {

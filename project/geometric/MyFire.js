@@ -103,4 +103,8 @@ export class MyFire extends CGFobject {
         this.scene.gl.depthMask(true);
         this.scene.gl.disable(this.scene.gl.BLEND);
     }
+
+    extinguish() {
+        this.flames = [];
+}
 }

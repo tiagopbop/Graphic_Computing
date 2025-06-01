@@ -106,17 +106,17 @@ export class MyScene extends CGFscene {
 
 
   checkKeys(t) {
-    const f = this.speedFactor;
+    const f = this.speedFactor * 2;
     if (this.gui.isKeyPressed("KeyW")) 
       this.heli.accelerate(4 * f);
 
     if (this.gui.isKeyPressed("KeyS")) 
       this.heli.accelerate(-1.5*f);
 
-    if (this.gui.isKeyPressed("KeyA")) 
+    if (this.gui.isKeyPressed("KeyD")) 
       this.heli.turn(0.02 * f);
    
-    if (this.gui.isKeyPressed("KeyD"))
+    if (this.gui.isKeyPressed("KeyA"))
        this.heli.turn(-0.02 * f);
 
     if (this.gui.isKeyPressed("KeyP")){
@@ -131,17 +131,13 @@ export class MyScene extends CGFscene {
 
     if (this.gui.isKeyPressed("KeyO")) {
       this.heli.dropWater();
-      this.extinguishFire();
     }
   }
 
-    extinguishFire() {
-      if(this.heli.isOverFire() && this.heli.bucketState === 'open'){
-        console.log("Extinguishing fire");
-        this.rightForest1.extinguish();
-        this.rightForest2.extinguish();
-      }
-    }
+  extinguishFire() {
+    this.rightForest1.extinguish(); 
+    this.rightForest2.extinguish();
+}
 
 
     update(t) {
@@ -151,7 +147,10 @@ export class MyScene extends CGFscene {
   
       this.checkKeys(t);
       this.heli.update(delta, this.speedFactor);
-  
+
+      if (this.heli.checkFireExtinguishing()) {
+        this.extinguishFire();
+    }
       let heliState = 'normal';
       if (this.heli.isLanding()) {
           heliState = 'landing';
