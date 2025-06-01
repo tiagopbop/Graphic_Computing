@@ -54,6 +54,13 @@ Custom bark and leaf textures are applied to trunks and foliage.
 **Screenshot:**  
 ![forest](screenshots/project-t10g11-5.png)
 
+
+### 3.5 Shadows on trees
+Realistic shadows were applied to both the bottom of the trees and top of foliages that were under another foliage.
+**Screenshot:**
+![forest](screenshots/project-t10g11-13.png)
+
+
 ---
 
 ## 4. Helicopter
