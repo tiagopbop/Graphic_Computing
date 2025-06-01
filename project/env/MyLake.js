@@ -1,4 +1,4 @@
-import {CGFobject, CGFappearance, CGFshader} from "../../lib/CGF.js";
+import {CGFobject, CGFshader} from "../../lib/CGF.js";
 
 export class MyLake extends CGFobject {
     /**
@@ -25,11 +25,11 @@ export class MyLake extends CGFobject {
         this.initBuffers();
     }
 
-  /**
-   * Initializes the buffers for the lake geometry.
-   * This method creates the vertices, normals, and texture coordinates for the lake geometry.
-   */
-  initBuffers() {
+    /**
+     * Initializes the buffers for the lake geometry.
+     * This method creates the vertices, normals, and texture coordinates for the lake geometry.
+     */
+    initBuffers() {
         this.vertices = [];
         this.indices = [];
         this.normals = [];

@@ -1,9 +1,9 @@
-import { CGFobject } from '../../lib/CGF.js';
-import { MyCylinder } from '../geometric/MyCylinder.js';
-import { MyCube } from '../geometric/MyCube.js';
-import { MyTrapezoid } from '../geometric/MyTrapezoid.js';
-import { MyTriangle } from '../geometric/MyTriangle.js';
-import { MySphere } from "../geometric/MySphere.js"
+import {CGFobject} from '../../lib/CGF.js';
+import {MyCylinder} from '../geometric/MyCylinder.js';
+import {MyCube} from '../geometric/MyCube.js';
+import {MyTrapezoid} from '../geometric/MyTrapezoid.js';
+import {MyTriangle} from '../geometric/MyTriangle.js';
+import {MySphere} from "../geometric/MySphere.js"
 
 /**
  * MyHeli
@@ -133,7 +133,7 @@ export class MyHeli extends CGFobject {
         this.bucketSpeed = 3;
         this.waitingForBucketRetraction = false;
 
-        this.waterSphere = new MySphere(scene, 10, 10,false,2);
+        this.waterSphere = new MySphere(scene, 10, 10, false, 2);
         this.waterDrops = [];
         this.isDropping = false;
         this.dropSpawnTimer = 0;
@@ -167,7 +167,7 @@ export class MyHeli extends CGFobject {
 
         // Scale and orient the helicopter model
         this.scene.scale(1, 1, 1);
-        this.scene.rotate(-Math.PI/2, 0, 1, 0);
+        this.scene.rotate(-Math.PI / 2, 0, 1, 0);
 
         // Display the helicopter parts
         this.heliConstruct();
@@ -180,7 +180,7 @@ export class MyHeli extends CGFobject {
      * Sets the helicopters status to take off.
      */
     takeOff() {
-        if(!this.in_air && this.helixRotationSpeed < this.bladeSpeedThreshold) {
+        if (!this.in_air && this.helixRotationSpeed < this.bladeSpeedThreshold) {
             this.revvingUp = true;
         }
 
@@ -237,6 +237,7 @@ export class MyHeli extends CGFobject {
 
         return isOver;
     }
+
     returnToHelipad() {
         this.targetHelipadX = 8;
         this.targetHelipadZ = 14.6;
@@ -244,7 +245,6 @@ export class MyHeli extends CGFobject {
 
         this.targetY = Math.max(20, this.position.y);
     }
-
 
 
     /**
@@ -307,10 +307,10 @@ export class MyHeli extends CGFobject {
         const fireLength = 700;
 
         const fireBounds = {
-            xMin: fireCenter.x - fireWidth/2,
-            xMax: fireCenter.x + fireWidth/2,
-            zMin: fireCenter.z - fireLength/2,
-            zMax: fireCenter.z + fireLength/2
+            xMin: fireCenter.x - fireWidth / 2,
+            xMax: fireCenter.x + fireWidth / 2,
+            zMin: fireCenter.z - fireLength / 2,
+            zMax: fireCenter.z + fireLength / 2
         };
 
         const isOver = (
@@ -322,6 +322,7 @@ export class MyHeli extends CGFobject {
 
         return isOver;
     }
+
     checkFireExtinguishing() {
         if (this.waterHitFire) {
             this.waterHitFire = false;
@@ -400,10 +401,10 @@ export class MyHeli extends CGFobject {
     update(deltaTime, speedFactor = 1.0) {
         const delta = deltaTime / 1000;
 
-        if (this.revvingUp){
+        if (this.revvingUp) {
             this.helixRotationSpeed = Math.min(this.bladeSpeedThreshold, this.helixRotationSpeed + 1 * delta);
 
-            if(this.helixRotationSpeed >= this.bladeSpeedThreshold){
+            if (this.helixRotationSpeed >= this.bladeSpeedThreshold) {
                 this.in_air = true;
                 this.targetY = this.cruiseAltitude;
                 this.revvingUp = false;
@@ -427,9 +428,9 @@ export class MyHeli extends CGFobject {
             this.position.x += this.velocity.x * delta;
             this.position.z += this.velocity.z * delta;
 
-        } else if (this.isLanding()){
+        } else if (this.isLanding()) {
             this.helixRotationSpeed = Math.max(0, this.helixRotationSpeed - 0.5 * delta);
-        } else if (!this.revvingUp){
+        } else if (!this.revvingUp) {
             this.helixRotationSpeed = 0;
         }
 
@@ -447,63 +448,63 @@ export class MyHeli extends CGFobject {
         }
 
 
-    if (this.returningToHelipad) {
-        const deltaX = this.targetHelipadX - this.position.x;
-        const deltaZ = this.targetHelipadZ - this.position.z;
-        const distance = Math.hypot(deltaX, deltaZ);
+        if (this.returningToHelipad) {
+            const deltaX = this.targetHelipadX - this.position.x;
+            const deltaZ = this.targetHelipadZ - this.position.z;
+            const distance = Math.hypot(deltaX, deltaZ);
 
-        //retract bucket when near helipad
-        if (distance < 15 && (this.bucketState === 'hanging' || this.bucketState === 'filled')) {
-            if (this.bucketState !== 'retracting') {
-                this.retractBucket();
-            }
-        }
-
-        if (distance > 2) {
-            const desiredOrientation = Math.atan2(deltaX, deltaZ);
-
-            let orientationDiff = desiredOrientation - this.orientation;
-
-            while (orientationDiff > Math.PI) orientationDiff -= 2 * Math.PI;
-            while (orientationDiff < -Math.PI) orientationDiff += 2 * Math.PI;
-
-            const rotationSpeed = 2.0;
-            const maxRotationStep = rotationSpeed * delta;
-
-            if (Math.abs(orientationDiff) > maxRotationStep) {
-                this.orientation += Math.sign(orientationDiff) * maxRotationStep;
-            } else {
-                this.orientation = desiredOrientation;
-            }
-
-            const alignmentThreshold = Math.PI / 6;
-            if (Math.abs(orientationDiff) < alignmentThreshold) {
-                const speed = 8;
-                this.velocity.x = (deltaX / distance) * speed;
-                this.velocity.z = (deltaZ / distance) * speed;
-
-                this.position.x += this.velocity.x * delta;
-                this.position.z += this.velocity.z * delta;
-            } else {
-                this.velocity.x *= 0.9;
-                this.velocity.z *= 0.9;
-            }
-
-        } else {
-            this.returningToHelipad = false;
-            this.velocity = {x: 0, z: 0};
-
-            if (this.bucketState === 'hanging' || this.bucketState === 'filled' || this.bucketState === 'retracting') {
-                this.waitingForBucketRetraction = true;
+            //retract bucket when near helipad
+            if (distance < 15 && (this.bucketState === 'hanging' || this.bucketState === 'filled')) {
                 if (this.bucketState !== 'retracting') {
                     this.retractBucket();
                 }
+            }
+
+            if (distance > 2) {
+                const desiredOrientation = Math.atan2(deltaX, deltaZ);
+
+                let orientationDiff = desiredOrientation - this.orientation;
+
+                while (orientationDiff > Math.PI) orientationDiff -= 2 * Math.PI;
+                while (orientationDiff < -Math.PI) orientationDiff += 2 * Math.PI;
+
+                const rotationSpeed = 2.0;
+                const maxRotationStep = rotationSpeed * delta;
+
+                if (Math.abs(orientationDiff) > maxRotationStep) {
+                    this.orientation += Math.sign(orientationDiff) * maxRotationStep;
+                } else {
+                    this.orientation = desiredOrientation;
+                }
+
+                const alignmentThreshold = Math.PI / 6;
+                if (Math.abs(orientationDiff) < alignmentThreshold) {
+                    const speed = 8;
+                    this.velocity.x = (deltaX / distance) * speed;
+                    this.velocity.z = (deltaZ / distance) * speed;
+
+                    this.position.x += this.velocity.x * delta;
+                    this.position.z += this.velocity.z * delta;
+                } else {
+                    this.velocity.x *= 0.9;
+                    this.velocity.z *= 0.9;
+                }
+
             } else {
-                this.in_air = false;
-                this.targetY = 0;
+                this.returningToHelipad = false;
+                this.velocity = {x: 0, z: 0};
+
+                if (this.bucketState === 'hanging' || this.bucketState === 'filled' || this.bucketState === 'retracting') {
+                    this.waitingForBucketRetraction = true;
+                    if (this.bucketState !== 'retracting') {
+                        this.retractBucket();
+                    }
+                } else {
+                    this.in_air = false;
+                    this.targetY = 0;
+                }
             }
         }
-    }
 
         // waiting for bucket retraction
         if (this.waitingForBucketRetraction) {
@@ -537,8 +538,6 @@ export class MyHeli extends CGFobject {
             this.tailRotorAngle += Math.max(0, this.helixRotationSpeed) * 2 * delta;
         }
     }
-
-
 
 
     heliConstruct() {
@@ -602,7 +601,7 @@ export class MyHeli extends CGFobject {
         // Bucket walls
         this.scene.pushMatrix();
         this.scene.translate(0, -this.bucketCurrentLength * 5 + 0.7, 0);
-        this.scene.rotate(Math.PI/2, 1, 0, 0);
+        this.scene.rotate(Math.PI / 2, 1, 0, 0);
         this.scene.scale(1.2, 1.2, 1.5);
         this.scene.textureManager.bucketMaterial.apply();
         this.bucket.display();
@@ -611,7 +610,7 @@ export class MyHeli extends CGFobject {
         //  Content
         this.scene.pushMatrix();
         this.scene.translate(0, -this.bucketCurrentLength * 5 + 0.71, 0);
-        this.scene.rotate(Math.PI/2, 1, 0, 0);
+        this.scene.rotate(Math.PI / 2, 1, 0, 0);
         this.scene.scale(1.0, 1.0, 1.3);
 
         if (this.bucketHasWater) {
@@ -633,7 +632,7 @@ export class MyHeli extends CGFobject {
         // Bucket bottom
         this.scene.pushMatrix();
         this.scene.translate(0, -this.bucketCurrentLength * 5 + 0.7 - 0.75, 0);
-        this.scene.rotate(Math.PI/2, 1, 0, 0);
+        this.scene.rotate(Math.PI / 2, 1, 0, 0);
         this.scene.scale(1.2, 1.2, 0.05);
         this.scene.textureManager.bucketMaterial.apply();
         this.bucketCap.display();
@@ -642,7 +641,7 @@ export class MyHeli extends CGFobject {
         // Bucket top rim
         this.scene.pushMatrix();
         this.scene.translate(0, -this.bucketCurrentLength * 5 + 0.45, 0);
-        this.scene.rotate(Math.PI/2, 1, 0, 0);
+        this.scene.rotate(Math.PI / 2, 1, 0, 0);
         this.scene.scale(1.25, 1.25, 0.05);
         this.scene.textureManager.bucketMaterial.apply();
         this.bucketCap.display();
@@ -671,7 +670,7 @@ export class MyHeli extends CGFobject {
             }
         }
 
-        switch(this.bucketState) {
+        switch (this.bucketState) {
             case 'deploying':
                 if (overHelipad) {
                     this.bucketState = 'stored';
@@ -809,7 +808,6 @@ export class MyHeli extends CGFobject {
     }
 
 
-
     displayWaterDropsInBucket() {
         if (this.waterDrops.length === 0) return;
 
@@ -824,7 +822,7 @@ export class MyHeli extends CGFobject {
 
             const ageFactor = 1 - (drop.life / drop.maxLife);
             const currentSize = drop.size * ageFactor;
-            this.scene.scale(currentSize/2, currentSize/2, currentSize/2);
+            this.scene.scale(currentSize / 2, currentSize / 2, currentSize / 2);
 
             this.scene.setDiffuse(0.2, 0.4, 0.8, 0.7 * ageFactor);
             this.scene.setAmbient(0.1, 0.2, 0.4, 1.0);
@@ -838,32 +836,28 @@ export class MyHeli extends CGFobject {
     }
 
 
-    displayHelix(bladeScaleFactor = 1){
+    displayHelix(bladeScaleFactor = 1) {
         // Support
+        this.scene.textureManager.brushedMetalMaterial.apply();
+
         this.scene.pushMatrix();
         this.scene.translate(0, .5, 0);
-        this.scene.rotate(-Math.PI/2, 1, 0, 0);
+        this.scene.rotate(-Math.PI / 2, 1, 0, 0);
         this.scene.scale(.55, .55, 2);
-        this.scene.textureManager.metalMaterialOG.apply();
         this.helixSupport.display();
         this.scene.popMatrix();
 
         this.scene.pushMatrix();
-        this.scene.rotate(-Math.PI/2, 1, 0, 0);
+        this.scene.rotate(-Math.PI / 2, 1, 0, 0);
         this.scene.scale(1, 1, .5);
-        this.scene.textureManager.metalMaterialOG.apply();
         this.helixSupportBase.display();
         this.scene.popMatrix();
 
         // Blades Support
         this.scene.pushMatrix();
         this.scene.translate(0, 1.75, 0);
-        this.scene.rotate(-Math.PI/2, 1, 0, 0);
+        this.scene.rotate(-Math.PI / 2, 1, 0, 0);
         this.scene.scale(1.1, 1.1, .5);
-        this.scene.textureManager.metalMaterialOG.apply();
-        this.scene.textureManager.metalMaterialOG.setAmbient(0.9, 0.9, 0.9, 1);
-        this.scene.textureManager.metalMaterialOG.setDiffuse(0.9, 0.9, 0.9, 1);
-        this.scene.textureManager.metalMaterialOG.setSpecular(0.1, 0.1, 0.1, 1);
         this.helixSupportBase.display();
         this.scene.popMatrix();
 
@@ -871,44 +865,40 @@ export class MyHeli extends CGFobject {
         this.scene.pushMatrix();
         this.scene.translate(-1.25, 2, 0);
         this.scene.rotate(this.helixRotationAngle, 0, 1, 0);
-        this.scene.rotate(-Math.PI/2, 1, 0, 0);
+        this.scene.rotate(-Math.PI / 2, 1, 0, 0);
         this.scene.scale(bladeScaleFactor * 4, 2, 1);
-        this.scene.textureManager.metalMaterialOG.apply();
         this.displayBlade();
         this.scene.popMatrix();
 
         this.scene.pushMatrix();
         this.scene.translate(0, 2, 1.25);
         this.scene.rotate(this.helixRotationAngle, 0, 1, 0);
-        this.scene.rotate(-Math.PI/2, 1, 0, 0);
-        this.scene.rotate(Math.PI/2, 0, 0, 1);
+        this.scene.rotate(-Math.PI / 2, 1, 0, 0);
+        this.scene.rotate(Math.PI / 2, 0, 0, 1);
         this.scene.scale(bladeScaleFactor * 4, 2, 1);
-        this.scene.textureManager.metalMaterialOG.apply();
         this.displayBlade();
         this.scene.popMatrix();
 
         this.scene.pushMatrix();
         this.scene.translate(1.25, 2, 0);
         this.scene.rotate(this.helixRotationAngle, 0, 1, 0);
-        this.scene.rotate(-Math.PI/2, 1, 0, 0);
+        this.scene.rotate(-Math.PI / 2, 1, 0, 0);
         this.scene.rotate(Math.PI, 0, 0, 1);
         this.scene.scale(bladeScaleFactor * 4, 2, 1);
-        this.scene.textureManager.metalMaterialOG.apply();
         this.displayBlade();
         this.scene.popMatrix();
 
         this.scene.pushMatrix();
         this.scene.translate(0, 2, -1.25);
         this.scene.rotate(this.helixRotationAngle, 0, 1, 0);
-        this.scene.rotate(-Math.PI/2, 1, 0, 0);
-        this.scene.rotate(-Math.PI/2, 0, 0, 1);
+        this.scene.rotate(-Math.PI / 2, 1, 0, 0);
+        this.scene.rotate(-Math.PI / 2, 0, 0, 1);
         this.scene.scale(bladeScaleFactor * 4, 2, 1);
-        this.scene.textureManager.metalMaterialOG.apply();
         this.displayBlade();
         this.scene.popMatrix();
     }
 
-    displayBlade(){
+    displayBlade() {
         this.scene.pushMatrix();
         this.scene.translate(0, -.125, 0);
         this.bladeSupport.display();
@@ -919,14 +909,14 @@ export class MyHeli extends CGFobject {
         this.scene.popMatrix();
     }
 
-    displayBottomSupport(leftSupport){
+    displayBottomSupport(leftSupport) {
         // Left Support is either 1 or -1 that indicates the position of the support
         // Main Support
         this.scene.pushMatrix();
-        this.scene.textureManager.metalMaterialOG.apply();
+        this.scene.textureManager.brushedMetalMaterial.apply();
         this.bottomSupport.display();
         this.scene.translate(0, .28, 4.2);
-        this.scene.rotate(-Math.PI/4, 1, 0, 0);
+        this.scene.rotate(-Math.PI / 4, 1, 0, 0);
         this.bottomSupport2.display();
         this.scene.popMatrix();
 
@@ -935,7 +925,7 @@ export class MyHeli extends CGFobject {
         this.scene.translate(leftSupport * .05, .5, 2);
         this.bottomConnector.display();
         this.scene.translate(leftSupport * .1, .75, 0);
-        this.scene.rotate(leftSupport * -Math.PI/5.5, 0, 0, 1);
+        this.scene.rotate(leftSupport * -Math.PI / 5.5, 0, 0, 1);
         this.bottomConnector2.display();
         this.scene.popMatrix();
 
@@ -943,14 +933,13 @@ export class MyHeli extends CGFobject {
         this.scene.translate(leftSupport * .05, .5, -2);
         this.bottomConnector.display();
         this.scene.translate(leftSupport * .1, .75, 0);
-        this.scene.rotate(leftSupport * -Math.PI/5.5, 0, 0, 1);
-        this.scene.textureManager.metalMaterialOG.apply();
+        this.scene.rotate(leftSupport * -Math.PI / 5.5, 0, 0, 1);
+        this.scene.textureManager.brushedMetalMaterial.apply();
         this.bottomConnector2.display();
         this.scene.popMatrix();
     }
 
-    displayBody(){
-
+    displayBody() {
         // Body Connecting With Tail
         this.scene.gl.enable(this.scene.gl.POLYGON_OFFSET_FILL); // Avoid twitching with Intersection Polygons
         this.scene.gl.polygonOffset(2.0, 2.0); // Offset factor and units
@@ -958,24 +947,23 @@ export class MyHeli extends CGFobject {
         this.scene.textureManager.brushedGoldMaterial.apply();
 
         this.scene.pushMatrix();
-        this.scene.translate(6.85, 1.25, .25);
+        this.scene.translate(6.85, 1.25, 0.25);
         this.scene.rotate(Math.PI, 0, 1, 0);
-        this.scene.scale(1,1,2);
-        this.scene.textureManager.metalMaterial.apply();
+        this.scene.scale(1, 1, 2);
         this.bodyTailConnect.display();
         this.scene.popMatrix();
 
         this.scene.textureManager.brushedGoldMaterial.apply();
 
         this.scene.pushMatrix();
-        this.scene.translate(11.6, 1.25, .25);
+        this.scene.translate(11.6, 1.25, 0.25);
         this.scene.rotate(Math.PI, 0, 0, 0);
         this.helixBodyBase.display();
         this.scene.popMatrix();
 
         // Top Part Wrap
         this.scene.pushMatrix();
-        this.scene.translate(12.1, 1, .25);
+        this.scene.translate(12.1, 1, 0.25);
         this.scene.rotate(Math.PI, 0, 0, 0);
         this.helixBodyWrap.display();
         this.scene.popMatrix();
@@ -989,7 +977,7 @@ export class MyHeli extends CGFobject {
         this.scene.textureManager.paintedRedMetalMaterial.apply();
 
         this.scene.pushMatrix();
-        this.scene.translate(13.35, -1, .25);
+        this.scene.translate(13.35, -1, 0.25);
         this.scene.rotate(Math.PI, 0, 0, 0);
         this.mainBodyUp.display();
         this.scene.popMatrix();
@@ -997,13 +985,13 @@ export class MyHeli extends CGFobject {
         // Main Body Down
 
         this.scene.pushMatrix();
-        this.scene.translate(8.35, -4, .25);
+        this.scene.translate(6.3, -1, 0.25);
         this.scene.rotate(Math.PI, 0, 0, 1);
         this.backPartUp2.display();
         this.scene.popMatrix();
 
         this.scene.pushMatrix();
-        this.scene.translate(6.3,-1,.25);
+        this.scene.translate(8.35, -4, 0.25);
         this.scene.rotate(Math.PI, 0, 0, 1);
         this.scene.textureManager.brushedGoldMaterial.apply();
         this.mainBodyDown.display();
@@ -1011,7 +999,7 @@ export class MyHeli extends CGFobject {
 
         // Front Body
         this.scene.pushMatrix();
-        this.scene.translate(17.1, -4.75, .25);
+        this.scene.translate(17.1, -4.75, 0.25);
         this.scene.rotate(Math.PI, 0, 0, 1);
         this.scene.rotate(Math.PI, 0, 1, 0);
         this.scene.textureManager.brushedGoldMaterial.apply();
@@ -1019,20 +1007,20 @@ export class MyHeli extends CGFobject {
         this.scene.popMatrix();
 
         this.scene.pushMatrix();
-        this.scene.translate(16.35, -3.25, .25);
+        this.scene.translate(16.35, -3.25, 0.25);
         this.frontPartUp.display();
         this.scene.popMatrix();
 
         // Bottom Base (Connected to the bottom support)
         this.scene.pushMatrix();
-        this.scene.translate(12, -5.65,.25)
+        this.scene.translate(12, -5.65, 0.25);
         this.bodySupport.display();
         this.scene.popMatrix();
 
         // WindShield
-        this.scene.textureManager.polishedAluminumMaterial.apply();
+        this.scene.textureManager.windshieldMaterial.apply();
         this.scene.pushMatrix();
-        this.scene.translate(14.5, -1.1, .25);
+        this.scene.translate(14.5, -1.1, 0.25);
         this.scene.rotate(Math.PI, 0, 0, 0);
         this.windshield.display();
         this.scene.popMatrix();
@@ -1042,20 +1030,21 @@ export class MyHeli extends CGFobject {
         this.scene.textureManager.paintedRedMetalMaterial.apply();
         this.windshieldDiv.display();
         this.scene.translate(1.27, -1.45, 0);
-        this.scene.rotate(-Math.PI/3, 0, 0, 1);
+        this.scene.rotate(-Math.PI / 3, 0, 0, 1);
         this.windshieldDiv2.display();
         this.scene.popMatrix();
 
         // this.scene.gl.disable(this.scene.gl.POLYGON_OFFSET_FILL);
     }
 
-    displayTail(){
+
+    displayTail() {
         // Tail
         this.scene.gl.enable(this.scene.gl.POLYGON_OFFSET_FILL); // Avoid twitching with Intersection Polygons
         this.scene.gl.polygonOffset(2.0, 2.0); // Offset factor and units
         this.scene.pushMatrix();
-        this.scene.translate(2.5,-.75,.25);
-        this.scene.rotate(-Math.PI/2, 0, 0, 1);
+        this.scene.translate(2.5, -0.75, 0.25);
+        this.scene.rotate(-Math.PI / 2, 0, 0, 1);
         this.scene.rotate(Math.PI, 1, 0, 0);
         this.scene.textureManager.paintedRedMetalMaterial.apply();
         this.tailBase.display();
@@ -1064,7 +1053,7 @@ export class MyHeli extends CGFobject {
 
         // Upper Tail
         this.scene.pushMatrix();
-        this.scene.translate(3.75, .75, .25);
+        this.scene.translate(3.75, 0.75, 0.25);
         this.scene.rotate(Math.PI, 0, 1, 0);
         this.scene.textureManager.brushedGoldMaterial.apply();
         this.tailTop.display();
@@ -1074,29 +1063,29 @@ export class MyHeli extends CGFobject {
     displayBackHelix() {
         // Back Helix
         this.scene.pushMatrix();
-        this.scene.translate(0, 1.5, .25);
+        this.scene.translate(0, 1.5, 0.25);
         this.scene.scale(2, 2, 2);
         this.displayTailFlap();
         this.scene.popMatrix();
 
         this.scene.pushMatrix();
-        this.scene.translate(0, -1.5, .25);
+        this.scene.translate(0, -1.5, 0.25);
         this.scene.scale(2, 2, 2);
         this.scene.rotate(Math.PI, 1, 0, 0);
         this.displayTailFlap();
         this.scene.popMatrix();
 
+        // Back Blades
         this.scene.pushMatrix();
         this.scene.translate(0, 0, -0.5);
-        this.scene.rotate(-Math.PI/2, 1, 0, 0);
+        this.scene.rotate(-Math.PI / 2, 1, 0, 0);
         this.scene.scale(0.25, 0.25, 0.25);
-
-        this.scene.rotate(this.tailRotorAngle, 0, 1, 0);
+        this.scene.rotate(this.helixRotationAngle, 0, 1, 0);
         this.displayHelix(0.35);
         this.scene.popMatrix();
     }
 
-    displayTailFlap(){
+    displayTailFlap() {
         this.scene.pushMatrix();
         this.scene.textureManager.brushedGoldMaterial.apply();
         this.tailFlap.display();
@@ -1104,14 +1093,14 @@ export class MyHeli extends CGFobject {
 
         this.scene.pushMatrix();
         this.scene.rotate(-Math.PI, 1, 0, 0);
-        this.scene.rotate(Math.PI/2, 0, 0, 1);
+        this.scene.rotate(Math.PI / 2, 0, 0, 1);
         this.scene.translate(0, 1, 0);
         this.scene.textureManager.brushedGoldMaterial.apply();
         this.tailFlap.display();
         this.scene.popMatrix();
     }
 
-    displayWings(zPosition){
+    displayWings(zPosition) {
         // zPosition is either 1 or -1 that indicates the position of the wing support
 
         // Wings
@@ -1122,7 +1111,7 @@ export class MyHeli extends CGFobject {
         this.scene.popMatrix();
 
         this.scene.pushMatrix();
-        this.scene.translate(0, -.75, 0);
+        this.scene.translate(0, -0.75, 0);
         this.trapezoidBase.display();
         this.scene.popMatrix();
 
@@ -1133,6 +1122,7 @@ export class MyHeli extends CGFobject {
         this.wingSupport.display();
         this.scene.popMatrix();
     }
+
 
     displayBucket() {
         this.scene.pushMatrix();

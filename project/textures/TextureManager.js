@@ -81,11 +81,10 @@ export class TextureManager {
             "./textures/plain/metal/painted_red_metal.png"
         );
 
-        this.bucketTexture= new CGFtexture(
+        this.bucketTexture = new CGFtexture(
             this.scene,
-            "./textures/plain/metal.jpg"
+            "./textures/plain/metal/metal.jpg"
         );
-
 
 
         this.earthTexture = new CGFtexture(
@@ -201,6 +200,9 @@ export class TextureManager {
         this.paintedRedMetalMaterial.setDiffuse(0.8, 0.2, 0.2, 1);
         this.paintedRedMetalMaterial.setSpecular(1.0, 0.4, 0.4, 1);
         this.paintedRedMetalMaterial.setShininess(140.0);
+
+        this.windshieldMaterial = this.createWindshieldMaterial(this.polishedAluminumTexture);
+
     }
 
     /**
@@ -339,7 +341,7 @@ export class TextureManager {
         if (mapTexture) {
             waterMaterial.setActiveTexture(mapTexture);
         }
-        waterMaterial.setTextureWrap('REPEAT', 'REPEAT');       
+        waterMaterial.setTextureWrap('REPEAT', 'REPEAT');
         return waterMaterial;
     }
 
@@ -388,5 +390,22 @@ export class TextureManager {
         grassMaterial.setTexture(texture);
         grassMaterial.setTextureWrap('REPEAT', 'REPEAT');
         return grassMaterial;
+    }
+
+    /**
+     * Creates a windshield material with the specified texture.
+     *
+     * @param {CGFtexture} texture - The texture to apply to the windshield material.
+     * @returns {CGFappearance} - The created windshield material.
+     */
+    createWindshieldMaterial(texture) {
+        const windshieldMaterial = new CGFappearance(this.scene);
+        windshieldMaterial.setAmbient(0.0, 0.1, 0.3, 1.0); // Blueish color
+        windshieldMaterial.setDiffuse(0.0, 0.2, 0.5, 1.0); // Blueish color
+        windshieldMaterial.setSpecular(0.1, 0.1, 0.1, 1.0);
+        windshieldMaterial.setShininess(10.0);
+        windshieldMaterial.setTexture(texture);
+        windshieldMaterial.setTextureWrap('REPEAT', 'REPEAT');
+        return windshieldMaterial;
     }
 }

@@ -4,15 +4,15 @@ import {MyInterface} from "./MyInterface.js";
 
 function main() {
     var app = new CGFapplication(document.body);
-    var myScene2 = new MyScene();
-    var myInterface2 = new MyInterface();
+    var myScene = new MyScene();
+    var myInterface = new MyInterface();
 
     app.init();
 
-    app.setScene(myScene2);
-    app.setInterface(myInterface2);
+    app.setScene(myScene);
+    app.setInterface(myInterface);
 
-    myInterface2.setActiveCamera(myScene2.camera);
+    myInterface.setActiveCamera(myScene.camera);
 
     app.run();
 }

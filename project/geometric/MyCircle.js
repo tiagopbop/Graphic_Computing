@@ -14,6 +14,7 @@ export class MyCircle extends CGFobject {
         this.isTop = isTop;
         this.initBuffers();
     }
+
     /**
      * Initializes the circle's vertices, indices, normals, and texture coordinates.
      */
