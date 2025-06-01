@@ -1,10 +1,10 @@
-import { CGFobject } from '../../lib/CGF.js';
+import {CGFobject} from "../../lib/CGF.js";
 
 /**
- * MyPlane
+ * MyPlane class represents a 2D plane in a 3D scene.
  * @constructor
- * @param scene - Reference to MyScene object
- * @param divisions - Number of divisions for the plane
+ * @param {MyScene} scene - Reference to the MyScene object.
+ * @param {number} divisions - Number of divisions for the plane.
  */
 export class MyPlane extends CGFobject {
     constructor(scene, divisions) {
@@ -13,6 +13,9 @@ export class MyPlane extends CGFobject {
         this.initBuffers();
     }
 
+    /**
+     * Initializes the plane's vertices, indices, normals, and texture coordinates.
+     */
     initBuffers() {
         this.vertices = [];
         this.indices = [];

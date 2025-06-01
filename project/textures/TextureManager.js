@@ -1,47 +1,152 @@
-import { CGFtexture, CGFappearance } from '../../lib/CGF.js';
+import {CGFappearance, CGFtexture} from "../../lib/CGF.js";
 
+/**
+ * Manages textures and materials for a 3D scene.
+ */
 export class TextureManager {
+    /**
+     * Constructor for the TextureManager class.
+     *
+     * @param {CGFscene} scene - The CGF scene to which the textures and materials will be applied.
+     */
     constructor(scene) {
         this.scene = scene;
         this.initTextures();
         this.initMaterials();
     }
 
+    /**
+     * Initializes textures for the 3D scene.
+     */
     initTextures() {
-        this.concreteTexture = new CGFtexture(this.scene, './textures/plain/concrete.jpg');
-        this.sandstoneBrickWallTexture = new CGFtexture(this.scene, './textures/plain/sandstone_brick_wall.jpg');
-        this.concreteTilesTexture = new CGFtexture(this.scene, './textures/plain/concrete_tiles.jpg');
-        this.windowTexture = new CGFtexture(this.scene, './textures/objects/Industrial_window.jpg');
-        this.doorTexture = new CGFtexture(this.scene, './textures/objects/mahogany_dark_door.jpg');
-        this.helipadHTexture = new CGFtexture(this.scene, './textures/plain/helih.png');
-        this.helipadDownTexture = new CGFtexture(this.scene, './textures/plain/helidown.png');
-        this.helipadUpTexture = new CGFtexture(this.scene, './textures/plain/heliup.png');      
-        this.garageTexture = new CGFtexture(this.scene, './textures/objects/garage_door.jpg');
-        this.logoTexture = new CGFtexture(this.scene, './textures/objects/logo.jpg');
-        this.metalTexture = new CGFtexture(this.scene, './textures/plain/Metal046A.jpg');
-        this.metalTexture2 = new CGFtexture(this.scene, './textures/plain/Metal046B.jpg');
-        this.metalTextureOG = new CGFtexture(this.scene, './textures/plain/Metal046A.jpg');
-        this.bucketTexture= new CGFtexture(this.scene, './textures/plain/metal.jpg');
-        this.earthTexture = new CGFtexture(this.scene, './textures/plain/earth.png');
-        this.trunkTexture = new CGFtexture(this.scene, './textures/plain/trunk.jpg');
-        this.leavesTexture = new CGFtexture(this.scene, './textures/plain/leavesbw.jpg');
-        this.grassTexture = new CGFtexture(this.scene, './textures/plain/grass.jpg');
-        this.shadowTexture = new CGFtexture(this.scene, './textures/plain/shadow3.png');
-        this.leavesGradTexture = new CGFtexture(this.scene, './textures/plain/leavesbwgradient.png');
-        this.waterTexture = new CGFtexture(this.scene, './textures/plain/water.jpg');
-        this.waterMapTexture = new CGFtexture(this.scene, './textures/plain/water_map.jpg'); // Add this!
+        this.concreteTexture = new CGFtexture(
+            this.scene,
+            "./textures/plain/construction/concrete.jpg"
+        );
+        this.sandstoneBrickWallTexture = new CGFtexture(
+            this.scene,
+            "./textures/plain/construction/sandstone_brick_wall.jpg"
+        );
+        this.concreteTilesTexture = new CGFtexture(
+            this.scene,
+            "./textures/plain/construction/concrete_tiles.jpg"
+        );
+        this.windowTexture = new CGFtexture(
+            this.scene,
+            "./textures/objects/Industrial_window.jpg"
+        );
+        this.doorTexture = new CGFtexture(
+            this.scene,
+            "./textures/objects/mahogany_dark_door.jpg"
+        );
+        this.helipadHTexture = new CGFtexture(
+            this.scene,
+            "./textures/plain/helipad/helih.png"
+        );
+        this.helipadDownTexture = new CGFtexture(
+            this.scene,
+            "./textures/plain/helipad/helidown.png"
+        );
+        this.helipadUpTexture = new CGFtexture(
+            this.scene,
+            "./textures/plain/helipad/heliup.png"
+        );
+        this.garageTexture = new CGFtexture(
+            this.scene,
+            "./textures/objects/garage_door.jpg"
+        );
+        this.logoTexture = new CGFtexture(
+            this.scene,
+            "./textures/objects/logo.jpg"
+        );
 
-        this.fireTexture = new CGFtexture(this.scene, './textures/plain/fire.jpg')
+        this.brushedMetalTexture = new CGFtexture(
+            this.scene,
+            "./textures/plain/metal/brushed_metal.png"
+        );
+        this.polishedAluminumTexture = new CGFtexture(
+            this.scene,
+            "./textures/plain/metal/polished_aluminum.png"
+        );
+        this.chromeTexture = new CGFtexture(
+            this.scene,
+            "./textures/plain/metal/chrome.png"
+        );
+        this.brushedGoldTexture = new CGFtexture(
+            this.scene,
+            "./textures/plain/metal/brushed_gold.png"
+        );
+        this.paintedRedMetalTexture = new CGFtexture(
+            this.scene,
+            "./textures/plain/metal/painted_red_metal.png"
+        );
 
-        this.panoramaTexture = new CGFtexture(this.scene, './textures/plain/panoram2.jpg');
+        this.bucketTexture= new CGFtexture(
+            this.scene,
+            "./textures/plain/metal.jpg"
+        );
 
-        this.roadTexture = new CGFtexture(this.scene,'./textures/plain/road2.jpg');
+
+
+        this.earthTexture = new CGFtexture(
+            this.scene,
+            "./textures/plain/nature/earth.png"
+        );
+        this.trunkTexture = new CGFtexture(
+            this.scene,
+            "./textures/plain/nature/trunk.jpg"
+        );
+        this.leavesTexture = new CGFtexture(
+            this.scene,
+            "./textures/plain/nature/leavesbw.jpg"
+        );
+        this.grassTexture = new CGFtexture(
+            this.scene,
+            "./textures/plain/nature/grass.jpg"
+        );
+        this.shadowTexture = new CGFtexture(
+            this.scene,
+            "./textures/plain/effects/shadow3.png"
+        );
+        this.leavesGradTexture = new CGFtexture(
+            this.scene,
+            "./textures/plain/nature/leavesbwgradient.png"
+        );
+        this.waterTexture = new CGFtexture(
+            this.scene,
+            "./textures/plain/effects/water.jpg"
+        );
+
+        this.waterMapTexture = new CGFtexture(
+            this.scene,
+            "./textures/plain/effects/water_map.jpg"
+        );
+
+        this.fireTexture = new CGFtexture(
+            this.scene,
+            "./textures/plain/effects/fire.jpg"
+        );
+
+        this.panoramaTexture = new CGFtexture(
+            this.scene,
+            "./textures/plain/panorama/panoram2.jpg"
+        );
+
+        this.roadTexture = new CGFtexture(
+            this.scene,
+            "./textures/plain/road/road2.jpg"
+        );
     }
 
+    /**
+     * Initializes materials for the 3D scene.
+     */
     initMaterials() {
         this.concreteMaterial = this.createMaterial(this.concreteTexture);
         this.windowMaterial = this.createMaterial(this.windowTexture);
-        this.sandstoneBrickWallMaterial = this.createMaterial(this.sandstoneBrickWallTexture);
+        this.sandstoneBrickWallMaterial = this.createMaterial(
+            this.sandstoneBrickWallTexture
+        );
         this.concreteTilesMaterial = this.createMaterial(this.concreteTilesTexture);
         this.doorMaterial = this.createMaterial(this.doorTexture);
         this.helipadHMaterial = this.createMaterial(this.helipadHTexture);
@@ -56,40 +161,54 @@ export class TextureManager {
         this.leavesMaterial = this.createLeavesMaterial(this.leavesTexture);
         this.grassMaterial = this.createGrassMaterial(this.grassTexture);
         this.shadowMaterial = this.createShadowMaterial(this.shadowTexture);
-        this.leavesGradMaterial = this.createLeavesGradMaterial(this.leavesGradTexture);
+        this.leavesGradMaterial = this.createLeavesGradMaterial(
+            this.leavesGradTexture
+        );
         this.waterMaterial = this.createWaterMaterial(this.waterTexture);
         this.fireMaterial = this.createFireMaterial(this.fireTexture);
 
         this.panoramMaterial = this.createPanoramMaterial(this.panoramaTexture);
 
         this.roadMaterial = this.createRoadMaterial(this.roadTexture);
-        // Original Metal
-        this.metalMaterialOG = this.createMaterial(this.metalTextureOG);
-        this.metalMaterialOG.setAmbient(0.5, 0.5, 0.5, 1);
-        this.metalMaterialOG.setDiffuse(0.5, 0.5, 0.5, 1);
-        this.metalMaterialOG.setSpecular(0.5, 0.5, 0.5, 1);
 
 
-        // Yellow Metal
-        this.metalMaterial = this.createMaterial(this.metalTexture);
-        this.metalMaterial.setAmbient(1.0, 1.0, 0.2, 1); // Brighter yellow tone
-        this.metalMaterial.setDiffuse(1.0, 1.0, 0.2, 1);
-        this.metalMaterial.setSpecular(1.0, 1.0, 0.5, 1);
+        this.brushedMetalMaterial = this.createMaterial(this.brushedMetalTexture);
+        this.brushedMetalMaterial.setAmbient(0.5, 0.5, 0.5, 1);
+        this.brushedMetalMaterial.setDiffuse(0.6, 0.6, 0.6, 1);
+        this.brushedMetalMaterial.setSpecular(1.0, 1.0, 1.0, 1);
+        this.brushedMetalMaterial.setShininess(150.0);
 
-        // Red Metal
-        this.metalMaterial2 = this.createMaterial(this.metalTexture2);
-        this.metalMaterial2.setAmbient(1.0, 0.2, 0.2, 1); // Brighter red tone
-        this.metalMaterial2.setDiffuse(1.0, 0.2, 0.2, 1);
-        this.metalMaterial2.setSpecular(1.0, 0.4, 0.4, 1);
+        this.polishedAluminumMaterial = this.createMaterial(this.polishedAluminumTexture);
+        this.polishedAluminumMaterial.setAmbient(0.7, 0.7, 0.7, 1);
+        this.polishedAluminumMaterial.setDiffuse(0.8, 0.8, 0.8, 1);
+        this.polishedAluminumMaterial.setSpecular(1.0, 1.0, 1.0, 1);
+        this.polishedAluminumMaterial.setShininess(180.0);
 
-        // Darker Metal
-        this.metalMaterialOG2 = this.createMaterial(this.metalTextureOG);
-        this.metalMaterialOG2.setAmbient(0.35, 0.35, 0.35, 1);
-        this.metalMaterialOG2.setDiffuse(0.35, 0.35, 0.35, 1);
-        this.metalMaterialOG2.setSpecular(0.35, 0.35, 0.35, 1);
+        this.chromeMaterial = this.createMaterial(this.chromeTexture);
+        this.chromeMaterial.setAmbient(0.8, 0.8, 0.8, 1);
+        this.chromeMaterial.setDiffuse(0.9, 0.9, 0.9, 1);
+        this.chromeMaterial.setSpecular(1.0, 1.0, 1.0, 1);
+        this.chromeMaterial.setShininess(200.0);
 
+        this.brushedGoldMaterial = this.createMaterial(this.brushedGoldTexture);
+        this.brushedGoldMaterial.setAmbient(0.7, 0.7, 0.3, 1);
+        this.brushedGoldMaterial.setDiffuse(0.8, 0.8, 0.3, 1);
+        this.brushedGoldMaterial.setSpecular(1.0, 0.9, 0.5, 1);
+        this.brushedGoldMaterial.setShininess(180.0);
+
+        this.paintedRedMetalMaterial = this.createMaterial(this.paintedRedMetalTexture);
+        this.paintedRedMetalMaterial.setAmbient(0.7, 0.2, 0.2, 1);
+        this.paintedRedMetalMaterial.setDiffuse(0.8, 0.2, 0.2, 1);
+        this.paintedRedMetalMaterial.setSpecular(1.0, 0.4, 0.4, 1);
+        this.paintedRedMetalMaterial.setShininess(140.0);
     }
 
+    /**
+     * Creates a material with the specified texture.
+     *
+     * @param {CGFtexture} texture - The texture to apply to the material.
+     * @returns {CGFappearance} - The created material.
+     */
     createMaterial(texture) {
         const material = new CGFappearance(this.scene);
         material.setAmbient(0.9, 0.9, 0.9, 1);
@@ -101,7 +220,13 @@ export class TextureManager {
         return material;
     }
 
-    createLeavesMaterial(texture){
+    /**
+     * Creates a material for leaves with the specified texture.
+     *
+     * @param {CGFtexture} texture - The texture to apply to the leaves material.
+     * @returns {CGFappearance} - The created leaves material.
+     */
+    createLeavesMaterial(texture) {
         const leavesMaterial = new CGFappearance(this.scene);
         leavesMaterial.setAmbient(0.1, 0.4, 0.1, 1.0);
         leavesMaterial.setDiffuse(0.2, 0.6, 0.2, 1.0);
@@ -112,7 +237,13 @@ export class TextureManager {
         return leavesMaterial;
     }
 
-    createLeavesGradMaterial(texture){
+    /**
+     * Creates a material for leaves with a gradient texture.
+     *
+     * @param {CGFtexture} texture - The texture to apply to the leaves material.
+     * @returns {CGFappearance} - The created leaves gradient material.
+     */
+    createLeavesGradMaterial(texture) {
         const leavesGradMaterial = new CGFappearance(this.scene);
         leavesGradMaterial.setAmbient(0.1, 0.4, 0.1, 1.0);
         leavesGradMaterial.setDiffuse(0.2, 0.6, 0.2, 1.0);
@@ -123,8 +254,13 @@ export class TextureManager {
         return leavesGradMaterial;
     }
 
-
-    createGrassMaterial(texture){
+    /**
+     * Creates a material for grass with the specified texture.
+     *
+     * @param {CGFtexture} texture - The texture to apply to the grass material.
+     * @returns {CGFappearance} - The created grass material.
+     */
+    createGrassMaterial(texture) {
         const grassMaterial = new CGFappearance(this.scene);
         grassMaterial.setAmbient(0.7, 0.7, 0.7, 1.0);
         grassMaterial.setDiffuse(1.0, 1.0, 1.0, 1.0);
@@ -135,7 +271,13 @@ export class TextureManager {
         return grassMaterial;
     }
 
-    createShadowMaterial(texture){
+    /**
+     * Creates a material for shadows with the specified texture.
+     *
+     * @param {CGFtexture} texture - The texture to apply to the shadow material.
+     * @returns {CGFappearance} - The created shadow material.
+     */
+    createShadowMaterial(texture) {
         const shadowMaterial = new CGFappearance(this.scene);
         shadowMaterial.setAmbient(0.7, 0.7, 0.7, 1.0);
         shadowMaterial.setDiffuse(1.0, 1.0, 1.0, 1.0);
@@ -146,7 +288,13 @@ export class TextureManager {
         return shadowMaterial;
     }
 
-    createTrunkMaterial(texture){
+    /**
+     * Creates a material for trunks with the specified texture.
+     *
+     * @param {CGFtexture} texture - The texture to apply to the trunk material.
+     * @returns {CGFappearance} - The created trunk material.
+     */
+    createTrunkMaterial(texture) {
         const trunkMaterial = new CGFappearance(this.scene);
         trunkMaterial.setAmbient(0.3, 0.2, 0.1, 1.0);
         trunkMaterial.setDiffuse(0.4, 0.3, 0.2, 1.0);
@@ -157,7 +305,13 @@ export class TextureManager {
         return trunkMaterial;
     }
 
-    createFireMaterial(texture){
+    /**
+     * Creates a material for fire with the specified texture.
+     *
+     * @param {CGFtexture} texture - The texture to apply to the fire material.
+     * @returns {CGFappearance} - The created fire material.
+     */
+    createFireMaterial(texture) {
         const fireMaterial = new CGFappearance(this.scene);
         fireMaterial.setAmbient(0.3, 0.2, 0.1, 1.0);
         fireMaterial.setDiffuse(0.4, 0.3, 0.2, 1.0);
@@ -168,6 +322,13 @@ export class TextureManager {
         return fireMaterial;
     }
 
+    /**
+     * Creates a water material with specified texture and optional map texture.
+     *
+     * @param {CGFtexture} texture - The main texture to be applied to the water material.
+     * @param {CGFtexture} [mapTexture] - An optional map texture to be used for additional effects.
+     * @returns {CGFappearance} The configured water material with the specified textures and properties.
+     */
     createWaterMaterial(texture, mapTexture) {
         const waterMaterial = new CGFappearance(this.scene);
         waterMaterial.setAmbient(0.2, 0.4, 0.6, 1.0);
@@ -182,7 +343,13 @@ export class TextureManager {
         return waterMaterial;
     }
 
-    createEarthMaterial(texture){
+    /**
+     * Creates a material for earth with the specified texture.
+     *
+     * @param {CGFtexture} texture - The texture to apply to the earth material.
+     * @returns {CGFappearance} - The created earth material.
+     */
+    createEarthMaterial(texture) {
         const earthMaterial = new CGFappearance(this.scene);
         earthMaterial.setAmbient(0.7, 0.7, 0.7, 1.0);
         earthMaterial.setDiffuse(1.0, 1.0, 1.0, 1.0);
@@ -193,14 +360,26 @@ export class TextureManager {
         return earthMaterial;
     }
 
-    createPanoramMaterial(texture){
+    /**
+     * Creates a panorama material with the specified texture.
+     *
+     * @param {CGFtexture} texture - The texture to apply to the panorama material.
+     * @returns {CGFappearance} - The created panorama material.
+     */
+    createPanoramMaterial(texture) {
         const panoramMaterial = new CGFappearance(this.scene);
         panoramMaterial.setEmission(1, 1, 1, 1);
         panoramMaterial.setTexture(texture);
         return panoramMaterial;
     }
 
-    createRoadMaterial(texture){
+    /**
+     * Creates a road material with the specified texture.
+     *
+     * @param {CGFtexture} texture - The texture to apply to the road material.
+     * @returns {CGFappearance} - The created road material.
+     */
+    createRoadMaterial(texture) {
         const grassMaterial = new CGFappearance(this.scene);
         grassMaterial.setAmbient(0.7, 0.7, 0.7, 1.0);
         grassMaterial.setDiffuse(1.0, 1.0, 1.0, 1.0);

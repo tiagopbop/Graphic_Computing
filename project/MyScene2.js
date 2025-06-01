@@ -1,9 +1,8 @@
-import { CGFscene, CGFcamera, CGFaxis} from "../lib/CGF.js";
+import { CGFscene, CGFcamera, CGFaxis } from "../lib/CGF.js";
 import { TextureManager } from "./textures/TextureManager.js";
 import { MyPlane } from "./MyPlane.js";
-import { MySphere } from "./geometric/MySphere.js"
+import { MySphere } from "./geometric/MySphere.js";
 import { MyCube } from "./geometric/MyCube.js";
-import { MyBuilding_Old } from "./objects/MyBuilding_Old.js";
 import { MyBuilding } from "./objects/MyBuilding.js";
 import { MyWindow } from "./objects/MyWindow.js";
 import { MyHeli } from "./objects/MyHeli.js";
@@ -54,16 +53,15 @@ export class MyScene2 extends CGFscene {
 
     //Ob
     this.objectList = {
-      'Plane': 0,
-      'Sphere': 1,
-      'Cube': 2,
-      'BuildingOld': 3,
-      'Building': 4,
-      'Window': 5,
-      'Heli': 6,
+      Plane: 0,
+      Sphere: 1,
+      Cube: 2,
+      BuildingOld: 3,
+      Building: 4,
+      Window: 5,
+      Heli: 6,
       // 'Lake' : 7
-
-    }
+    };
 
     this.selectedObject = 6;
     this.selectedMaterial = 0;
@@ -71,7 +69,6 @@ export class MyScene2 extends CGFscene {
     this.scaleFactor = 10.0;
     this.ambientlightFactor = 0.6;
     this.cameraZoom = 0.35;
-
   }
 
   initLights() {
@@ -105,11 +102,11 @@ export class MyScene2 extends CGFscene {
 
   initCameras() {
     this.camera = new CGFcamera(
-        0.6, // Field of View
-        0.1, // Near Clipping Plane
-        1000, // Far Clipping Plane
-        vec3.fromValues(400, 400, 400), // Camera Position
-        vec3.fromValues(0, 0, 0) // Target Position
+      0.6, // Field of View
+      0.1, // Near Clipping Plane
+      1000, // Far Clipping Plane
+      vec3.fromValues(400, 400, 400), // Camera Position
+      vec3.fromValues(0, 0, 0) // Target Position
     );
   }
 
@@ -118,28 +115,36 @@ export class MyScene2 extends CGFscene {
     this.camera.setPosition(vec3.fromValues(400, 400, 400));
     this.camera.setTarget(vec3.fromValues(0, 0, 0));
     this.cameraZoom = 0.6;
-    this.updateProjectionMatrix()
+    this.updateProjectionMatrix();
   }
 
-    moveCameraLR(offset) {
-      console.log("Moving camera left/right by: " + offset);
-      const speed = 2.0;
-      const position = this.camera.position;
-      const target = this.camera.target;
-      this.camera.setPosition(vec3.fromValues(position[0]+offset * speed, position[1], position[2]));
-        this.camera.setTarget(vec3.fromValues(target[0]+offset * speed, target[1], target[2]));
-      this.updateProjectionMatrix();
-    }
+  moveCameraLR(offset) {
+    console.log("Moving camera left/right by: " + offset);
+    const speed = 2.0;
+    const position = this.camera.position;
+    const target = this.camera.target;
+    this.camera.setPosition(
+      vec3.fromValues(position[0] + offset * speed, position[1], position[2])
+    );
+    this.camera.setTarget(
+      vec3.fromValues(target[0] + offset * speed, target[1], target[2])
+    );
+    this.updateProjectionMatrix();
+  }
 
-    moveCameraUD(offset) {
-        console.log("Moving camera up/down by: " + offset);
-        const speed = 2.0;
-        const position = this.camera.position;
-        const target = this.camera.target;
-        this.camera.setPosition(vec3.fromValues(position[0], position[1] + offset * speed, position[2] ));
-        this.camera.setTarget(vec3.fromValues(target[0], target[1] + offset*speed, target[2]));
-        this.updateProjectionMatrix();
-    }
+  moveCameraUD(offset) {
+    console.log("Moving camera up/down by: " + offset);
+    const speed = 2.0;
+    const position = this.camera.position;
+    const target = this.camera.target;
+    this.camera.setPosition(
+      vec3.fromValues(position[0], position[1] + offset * speed, position[2])
+    );
+    this.camera.setTarget(
+      vec3.fromValues(target[0], target[1] + offset * speed, target[2])
+    );
+    this.updateProjectionMatrix();
+  }
 
   checkKeys() {
     var text = "Keys pressed: ";
@@ -155,10 +160,8 @@ export class MyScene2 extends CGFscene {
       text += " S ";
       keysPressed = true;
     }
-    if (keysPressed)
-      console.log(text);
+    if (keysPressed) console.log(text);
   }
-
 
   update(t) {
     this.checkKeys();
@@ -193,10 +196,10 @@ export class MyScene2 extends CGFscene {
 
     // Update global ambient light
     this.setGlobalAmbientLight(
-        this.ambientlightFactor,
-        this.ambientlightFactor,
-        this.ambientlightFactor,
-        1.0
+      this.ambientlightFactor,
+      this.ambientlightFactor,
+      this.ambientlightFactor,
+      1.0
     );
 
     // Draw axis
@@ -208,13 +211,11 @@ export class MyScene2 extends CGFscene {
 
     // ---- BEGIN Geometric transformation section
 
-
     this.pushMatrix();
     this.scale(this.scaleFactor, this.scaleFactor, this.scaleFactor);
 
     this.objects[this.selectedObject].display();
 
     this.popMatrix();
-
   }
 }

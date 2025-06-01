@@ -1,15 +1,15 @@
-import { CGFobject } from '../../lib/CGF.js';
+import {CGFobject} from "../../lib/CGF.js";
 
 /**
-* MySphere
-* @constructor
-* @param scene - Reference to MyScene object
-* @param slices - number of divisions around the Y axis (longitude)
-* @param stacks - number of divisions along the Y axis (latitude)
-* @param inverted - if true, sphere is inverted (normals face inward)
-*/
+ * MySphere
+ * @constructor
+ * @param scene - Reference to MyScene object
+ * @param slices - number of divisions around the Y axis (longitude)
+ * @param stacks - number of divisions along the Y axis (latitude)
+ * @param inverted - if true, sphere is inverted (normals face inward)
+ */
 export class MySphere extends CGFobject {
-    constructor(scene, slices, stacks, inverted=true, radius = 1) {
+    constructor(scene, slices, stacks, inverted = true, radius = 1) {
         super(scene);
         this.slices = slices;
         this.stacks = stacks;
@@ -18,20 +18,23 @@ export class MySphere extends CGFobject {
         this.initBuffers();
     }
 
+    /**
+     * Initializes the sphere's vertices, indices, normals, and texture coordinates.
+     */
     initBuffers() {
         this.vertices = [];
         this.indices = [];
         this.normals = [];
         this.texCoords = [];
 
-        const alphaAng = 2 * Math.PI / this.slices;
+        const alphaAng = (2 * Math.PI) / this.slices;
         const betaAng = Math.PI / this.stacks;
 
         // Vertices, normals, texCoords
         for (let stack = 0; stack <= this.stacks; stack++) {
-            const beta = stack * betaAng; 
+            const beta = stack * betaAng;
             const z = Math.cos(beta);
-            const r = Math.sin(beta); 
+            const r = Math.sin(beta);
 
             for (let slice = 0; slice <= this.slices; slice++) {
                 const alpha = slice * alphaAng;
@@ -69,8 +72,12 @@ export class MySphere extends CGFobject {
         this.initGLBuffers();
     }
 
+    /**
+     * Updates the sphere's complexity by adjusting the number of slices.
+     * @param {number} complexity - A value between 0 and 1 representing the desired complexity.
+     */
     updateBuffers(complexity) {
-        this.slices = 3 + Math.round(9 * complexity); 
+        this.slices = 3 + Math.round(9 * complexity);
         this.initBuffers();
         this.initNormalVizBuffers();
     }

@@ -14,6 +14,6 @@ varying vec2 vTextureCoord;
 void main(void) {
     vTextureCoord = aTextureCoord;
     vNormal = normalize((uNMatrix * vec4(aVertexNormal, 0.0)).xyz);
-    
+
     gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
 }

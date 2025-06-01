@@ -1,9 +1,11 @@
-import {CGFobject} from '../../lib/CGF.js';
+import {CGFobject} from "../../lib/CGF.js";
 
 /**
- * MyCylinder
+ * MyCylinder class represents a cylinder in a WebGL scene.
  * @constructor
- * @param scene - Reference to MyScene object
+ * @param {CGFscene} scene - Reference to the MyScene object.
+ * @param {Number} slices - Number of slices for the cylinder.
+ * @param {Number} stacks - Number of stacks for the cylinder.
  */
 export class MyCylinder extends CGFobject {
     constructor(scene, slices, stacks) {
@@ -13,6 +15,9 @@ export class MyCylinder extends CGFobject {
         this.initBuffers();
     }
 
+    /**
+     * Initializes the WebGL buffers for the cylinder.
+     */
     initBuffers() {
         this.vertices = [];
         this.indices = [];
@@ -20,7 +25,7 @@ export class MyCylinder extends CGFobject {
         this.texCoords = []; // Add texCoords array
 
         var ang = 0;
-        var alphaAng = 2 * Math.PI / this.slices;
+        var alphaAng = (2 * Math.PI) / this.slices;
         var indexAux = 0;
 
         // Side faces
@@ -59,8 +64,8 @@ export class MyCylinder extends CGFobject {
                 this.normals.push(...normal, ...normal, ...normalXY, ...normalXY);
 
                 // Texture Coordinates (sides)
-                this.texCoords.push(i / this.slices, zUpper);     // Top left
-                this.texCoords.push(i / this.slices, zLower);     // Bottom left
+                this.texCoords.push(i / this.slices, zUpper); // Top left
+                this.texCoords.push(i / this.slices, zLower); // Bottom left
                 this.texCoords.push((i + 1) / this.slices, zLower); // Bottom right
                 this.texCoords.push((i + 1) / this.slices, zUpper); // Top right
 
@@ -75,7 +80,7 @@ export class MyCylinder extends CGFobject {
 
         // Bottom cap
         let baseCenterIndex = this.vertices.length / 3;
-        this.vertices.push(0, 0, 0);  // Center vertex
+        this.vertices.push(0, 0, 0); // Center vertex
         this.normals.push(0, 0, -1);
         this.texCoords.push(0.5, 0.5); // Center texCoord
 
@@ -87,13 +92,17 @@ export class MyCylinder extends CGFobject {
             this.normals.push(0, 0, -1);
             this.texCoords.push(0.5 + 0.5 * ca, 0.5 - 0.5 * sa); // Circular mapping
 
-            this.indices.push(baseCenterIndex, baseCenterIndex + ((i + 1) % this.slices) + 1, baseCenterIndex + i + 1);
+            this.indices.push(
+                baseCenterIndex,
+                baseCenterIndex + ((i + 1) % this.slices) + 1,
+                baseCenterIndex + i + 1
+            );
             ang += alphaAng;
         }
 
         // Top cap
         let topCenterIndex = this.vertices.length / 3;
-        this.vertices.push(0, 0, 1);  // Center vertex
+        this.vertices.push(0, 0, 1); // Center vertex
         this.normals.push(0, 0, 1);
         this.texCoords.push(0.5, 0.5); // Center texCoord
 
@@ -105,7 +114,11 @@ export class MyCylinder extends CGFobject {
             this.normals.push(0, 0, 1);
             this.texCoords.push(0.5 + 0.5 * ca, 0.5 - 0.5 * sa); // Circular mapping
 
-            this.indices.push(topCenterIndex, topCenterIndex + i + 1, topCenterIndex + ((i + 1) % this.slices) + 1);
+            this.indices.push(
+                topCenterIndex,
+                topCenterIndex + i + 1,
+                topCenterIndex + ((i + 1) % this.slices) + 1
+            );
             ang += alphaAng;
         }
 
@@ -114,6 +127,10 @@ export class MyCylinder extends CGFobject {
         this.initGLBuffers();
     }
 
+    /**
+     * Updates the WebGL buffers based on the given complexity.
+     * @param {Number} complexity - A value between 0 and 1 representing the complexity level.
+     */
     updateBuffers(complexity) {
         this.slices = 3 + Math.round(9 * complexity); // Slices vary from 3-12
         this.initBuffers();
