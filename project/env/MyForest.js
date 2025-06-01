@@ -92,7 +92,6 @@ export class MyForest extends CGFobject {
 
     /**
      * Extinguishes the forest fire by removing the fire instance and setting all trees' on_fire status to false.
-     * Logs the action to the console.
      */
     extinguish() {
         if (this.forestFire) {
@@ -102,7 +101,6 @@ export class MyForest extends CGFobject {
             tree.on_fire = false;
         }
 
-        console.log("Extinguishing the forest fire.");
     }
 
     /**
