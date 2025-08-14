@@ -14,5 +14,8 @@
   - [tp4](tp4/README.md)
   - [tp5](tp5/README.md)
   - [Project](project/README.md)
-    
+
+### Checkout the project here:
+https://tiagopbop.github.io/Graphic-Computing/
+
 Project grade: 19.1
